@@ -1,0 +1,19 @@
+/**
+ * Configuração central da loja.
+ * Troque o WhatsApp aqui (ou em /admin/configuracoes) para receber os pedidos.
+ */
+export const storeConfig = {
+  name: "Makes by Cris Martins",
+  shortName: "Makes",
+  tagline: "Beleza com assinatura",
+  description:
+    "Catálogo digital de maquiagem, perfumes, skincare e cuidados selecionados por Cris Martins. Escolha seus produtos e finalize o pedido pelo WhatsApp.",
+  city: "Poranga - CE",
+  /** Número de exemplo — substitua pelo número real da loja (DDI + DDD + número) */
+  whatsapp: "5588999172635",
+  whatsappDisplay: "(88) 999172635",
+  instagram: "@makesbycrismartins",
+  /** Deixe null para exibir "Calculada no pedido" no resumo */
+  deliveryFee: null as number | null,
+  hours: "Seg a Sáb, 9h às 18h",
+} as const;
