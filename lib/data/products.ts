@@ -399,6 +399,64 @@ export const products: Product[] = [
     active: true,
     createdAt: "2026-07-24",
   },
+  {
+    id: "p-21",
+    name: "Kit Presente Completo",
+    slug: "kit-presente-completo",
+    shortDescription: "Uma seleção especial pronta para presentear.",
+    description:
+      "Kit presenteável com uma seleção de itens pensados para surpreender em datas especiais. Uma opção prática, elegante e pronta para transformar o presente em uma experiência completa.",
+    price: 149.9,
+    creditPrice: 159.9,
+    image: "/images/produtos/kit-presente-completo.png",
+    category: "acessorios",
+    brand: "Cris Martins Studio",
+    keywords: ["kit", "presente", "presenteável", "combo", "especial"],
+    featured: false,
+    bestSeller: false,
+    available: true,
+    active: true,
+    createdAt: "2026-07-15",
+  },
+  {
+    id: "p-22",
+    name: "Bolsa Feminina Rosé",
+    slug: "bolsa-feminina-rose",
+    shortDescription: "Elegância e praticidade para todos os momentos.",
+    description:
+      "Bolsa feminina em acabamento rosé com design elegante e versátil. Espaço interno organizado e tamanho ideal para acompanhar a rotina ou compor um presente especial.",
+    price: 119.9,
+    creditPrice: 129.9,
+    image: "/images/produtos/bolsa-feminina-rose..png",
+    category: "acessorios",
+    brand: "Cris Martins Studio",
+    keywords: ["bolsa", "acessórios", "feminino", "presente", "rosé"],
+    featured: false,
+    bestSeller: false,
+    available: true,
+    active: true,
+    createdAt: "2026-07-10",
+  },
+  {
+    id: "p-23",
+    name: "Urso Presenteável",
+    slug: "urso-presenteavel",
+    shortDescription: "Um carinho especial para tornar o presente inesquecível.",
+    description:
+      "Urso de pelúcia com acabamento delicado, pensado para complementar kits e presentes especiais. Uma escolha afetiva para aniversários e outras ocasiões.",
+    price: 89.9,
+    creditPrice: 97.9,
+    image: "/images/produtos/urso-presenteavel..png",
+    category: "acessorios",
+    brand: "Cris Martins Studio",
+    keywords: ["urso", "pelúcia", "presente", "kit", "romântico"],
+    featured: false,
+    bestSeller: false,
+    available: true,
+    active: true,
+    createdAt: "2026-07-05",
+  },
+
 ];
 
 export function getProductBySlug(slug: string) {
@@ -481,3 +539,14 @@ export function searchProducts(query: string) {
     )
     .map((entry) => entry.product);
 }
+export const giftProducts = products.filter(
+  (product) =>
+    product.active &&
+    product.available &&
+    (
+      product.keywords.includes("presente") ||
+      product.keywords.includes("kit") ||
+      product.keywords.includes("bolsa") ||
+      product.keywords.includes("urso")
+    )
+);

@@ -12,8 +12,8 @@ export const storeConfig = {
   /** Número de exemplo — substitua pelo número real da loja (DDI + DDD + número) */
   whatsapp: "5588999172635",
   whatsappDisplay: "(88) 999172635",
-  instagram: "@makesbycrismartins",
+  instagram: "@makes_by_crismartins",
   /** Deixe null para exibir "Calculada no pedido" no resumo */
   deliveryFee: null as number | null,
-  hours: "Seg a Sáb, 9h às 18h",
+  hours: "Seg a Sáb, 7:30h às 18h Dom 7:30 às 12h",
 } as const;

@@ -1,4 +1,5 @@
 import { ArrowRight } from "lucide-react";
+
 import { LinkButton } from "@/components/link-button";
 import { CategoryCarousel } from "@/components/category-carousel";
 import { ProductGrid } from "@/components/product-grid";
@@ -7,6 +8,7 @@ import { categories } from "@/lib/data/categories";
 import {
   bestSellers,
   featuredProducts,
+  giftProducts,
   getProductsByCategory,
   newArrivals,
 } from "@/lib/data/products";
@@ -14,6 +16,7 @@ import { storeConfig } from "@/lib/store-config";
 
 export default function HomePage() {
   const activeCategories = categories.filter((category) => category.active);
+
   const categoryCounts = Object.fromEntries(
     activeCategories.map((category) => [
       category.slug,
@@ -23,14 +26,33 @@ export default function HomePage() {
 
   // Evita repetir os mesmos produtos entre as vitrines da home.
   const highlights = featuredProducts.slice(0, 4);
-  const highlightIds = new Set(highlights.map((product) => product.id));
+
+  const highlightIds = new Set(
+    highlights.map((product) => product.id),
+  );
+
   const topSellers = bestSellers
     .filter((product) => !highlightIds.has(product.id))
     .slice(0, 4);
+
+  const topSellerIds = new Set(
+    topSellers.map((product) => product.id),
+  );
+
+  const gifts = giftProducts
+    .filter(
+      (product) =>
+        !highlightIds.has(product.id) &&
+        !topSellerIds.has(product.id),
+    )
+    .slice(0, 4);
+
   const shownIds = new Set([
     ...highlightIds,
-    ...topSellers.map((product) => product.id),
+    ...topSellerIds,
+    ...gifts.map((product) => product.id),
   ]);
+
   const latest = newArrivals
     .filter((product) => !shownIds.has(product.id))
     .slice(0, 4);
@@ -69,15 +91,11 @@ export default function HomePage() {
               variant="outline"
               className="group relative mt-0.5 h-9 gap-2 overflow-hidden rounded-full border-foreground/20 bg-background/60 px-4 text-[0.65rem] tracking-[0.14em] uppercase transition-colors duration-500 hover:border-primary hover:text-primary-foreground sm:mt-0 sm:h-10 sm:px-5 sm:text-xs"
             >
-              {/* Preenchimento progressivo do hover */}
               <span
                 aria-hidden="true"
                 className="absolute inset-y-0 left-0 z-0 w-0 bg-primary transition-[width] duration-500 ease-out group-hover:w-full"
               />
-
-              {/* Conteúdo permanece acima do preenchimento */}
               <span className="relative z-10">Explorar catálogo</span>
-
               <ArrowRight
                 className="relative z-10 size-3.5 transition-transform duration-500 ease-out group-hover:translate-x-1"
                 aria-hidden="true"
@@ -124,7 +142,17 @@ export default function HomePage() {
         <ProductGrid products={topSellers} />
       </section>
 
-      {/* Novidades */}
+      {/* Presentes & Kits */}
+      <section className="container-boutique flex flex-col gap-6 sm:gap-8">
+        <SectionHeading
+          eyebrow="Para presentear"
+          title="Presentes & Kits"
+          description="Kits completos, bolsas, ursos e escolhas especiais para surpreender."
+        />
+
+        <ProductGrid products={gifts} />
+      </section>
+
       {/* Novidades */}
       <section className="container-boutique">
         <div className="rounded-3xl bg-blush/45 px-5 py-7 sm:px-8 sm:py-9 lg:px-10 lg:py-10">
