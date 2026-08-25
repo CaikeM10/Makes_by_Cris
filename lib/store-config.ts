@@ -13,7 +13,8 @@ export const storeConfig = {
   whatsapp: "5588999172635",
   whatsappDisplay: "(88) 999172635",
   instagram: "@makes_by_crismartins",
+  mapsUrl: "https://maps.app.goo.gl/PjL37AE7pKBMtThu9",
   /** Deixe null para exibir "Calculada no pedido" no resumo */
   deliveryFee: null as number | null,
-  hours: "Seg a Sáb, 7:30h às 18h Dom 7:30 às 12h",
+  hours: "Seg a Sáb, 7:00h às 18h Dom 7:00 às 12h",
 } as const;

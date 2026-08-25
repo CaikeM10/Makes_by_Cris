@@ -1,9 +1,5 @@
 import Link from "next/link";
-import {
-  MapPin,
-  MessageCircle,
-  ShoppingBag,
-} from "lucide-react";
+import { MapPin, MessageCircle, ShoppingBag } from "lucide-react";
 
 import { BrandLogo } from "@/components/brand-logo";
 import { categories } from "@/lib/data/categories";
@@ -12,11 +8,7 @@ import { storeConfig } from "@/lib/store-config";
 /* =====================================================
    ÍCONE WHATSAPP
 ===================================================== */
-function WhatsAppIcon({
-  className = "",
-}: {
-  className?: string;
-}) {
+function WhatsAppIcon({ className = "" }: { className?: string }) {
   return (
     <svg
       viewBox="0 0 24 24"
@@ -33,11 +25,7 @@ function WhatsAppIcon({
    ÍCONE INSTAGRAM
    SVG inline para evitar incompatibilidade com lucide
 ===================================================== */
-function InstagramIcon({
-  className = "",
-}: {
-  className?: string;
-}) {
+function InstagramIcon({ className = "" }: { className?: string }) {
   return (
     <svg
       viewBox="0 0 24 24"
@@ -51,14 +39,9 @@ function InstagramIcon({
 }
 
 export function SiteFooter() {
-  const activeCategories = categories.filter(
-    (category) => category.active,
-  );
+  const activeCategories = categories.filter((category) => category.active);
 
-  const instagramUsername = storeConfig.instagram.replace(
-    "@",
-    "",
-  );
+  const instagramUsername = storeConfig.instagram.replace("@", "");
 
   const storeWhatsAppUrl = `https://wa.me/${storeConfig.whatsapp}`;
 
@@ -103,37 +86,38 @@ export function SiteFooter() {
               Beleza • Autocuidado • Presentes
             </p>
 
-            <BrandLogo
-              size="sm"
-              className="mb-5"
-            />
+            <BrandLogo size="sm" className="mb-5" />
 
             <p className="max-w-md text-sm leading-6 text-muted-foreground">
-              Beleza, autocuidado e presentes selecionados
-              para transformar cada escolha em algo especial.
+              Beleza, autocuidado e presentes selecionados para transformar cada
+              escolha em algo especial.
             </p>
 
             {/* LOCALIZAÇÃO */}
             <div className="mt-6 flex items-start gap-3 text-sm text-muted-foreground">
-              <div className="mt-0.5 flex size-8 shrink-0 items-center justify-center rounded-full border border-primary/15 bg-background/50 text-primary">
-                <MapPin
-                  className="size-3.5"
-                  aria-hidden="true"
-                />
-              </div>
+              <a
+                href={storeConfig.mapsUrl}
+                target="_blank"
+                rel="noreferrer"
+                aria-label="Ver localização da Makes by Cris Martins no Google Maps"
+                title="Abrir localização no Google Maps"
+                className="mt-0.5 flex size-8 shrink-0 items-center justify-center rounded-full border border-primary/15 bg-background/50 text-primary transition-all duration-300 hover:-translate-y-0.5 hover:border-primary hover:bg-primary hover:text-primary-foreground"
+              >
+                <MapPin className="size-3.5" aria-hidden="true" />
+              </a>
 
               <div className="flex flex-col gap-0.5 text-left">
-                <span className="font-medium text-foreground/80">
+                <a
+                  href={storeConfig.mapsUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="font-medium text-foreground/80 transition-colors hover:text-primary"
+                >
                   Poranga - CE
-                </span>
+                </a>
 
-                <span>
-                  Seg a Sáb, 8h às 18h
-                </span>
-
-                <span>
-                  Dom, 8h às 12h
-                </span>
+                <span>Seg a Sáb, 7h às 18h</span>
+                <span>Dom, 7h às 12h</span>
               </div>
             </div>
 
@@ -148,7 +132,7 @@ export function SiteFooter() {
                 title="Instagram"
                 className="flex size-10 items-center justify-center rounded-full border border-primary/20 bg-background/40 text-primary transition-all duration-300 hover:-translate-y-0.5 hover:border-primary hover:bg-primary hover:text-primary-foreground"
               >
-                <InstagramIcon className="size-4" />
+                <InstagramIcon className="size-5" />
               </a>
 
               {/* WHATSAPP */}
@@ -235,7 +219,7 @@ export function SiteFooter() {
                   href={instagramUrl}
                   target="_blank"
                   rel="noreferrer"
-                  className="flex min-w-0 items-center gap-2 text-sm text-muted-foreground transition-colors duration-300 hover:text-primary"
+                  className="flex min-w-0 items-center gap-1 text-sm text-muted-foreground transition-colors duration-300 hover:text-primary"
                 >
                   <InstagramIcon className="size-4 shrink-0" />
 
@@ -251,11 +235,7 @@ export function SiteFooter() {
                   href="/sacola"
                   className="flex items-center gap-2 text-sm text-muted-foreground transition-colors duration-300 hover:text-primary"
                 >
-                  <ShoppingBag
-                    className="size-4 shrink-0"
-                    aria-hidden="true"
-                  />
-
+                  <ShoppingBag className="size-4 shrink-0" aria-hidden="true" />
                   Minha sacola
                 </Link>
               </li>
@@ -270,9 +250,7 @@ export function SiteFooter() {
             >
               <WhatsAppIcon className="size-3.5 shrink-0" />
 
-              <span>
-                Falar com a Cris
-              </span>
+              <span>Falar com o atendimento.</span>
             </a>
           </div>
         </div>
@@ -301,7 +279,6 @@ export function SiteFooter() {
               className="group inline-flex items-center gap-1 text-xs font-medium text-primary/80 transition-colors duration-300 hover:text-primary"
             >
               Caike Marinho
-
               <span
                 className="transition-transform duration-300 group-hover:translate-x-1"
                 aria-hidden="true"
