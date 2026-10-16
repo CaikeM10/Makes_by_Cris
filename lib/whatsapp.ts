@@ -3,6 +3,7 @@ import { formatCurrency } from "@/lib/format";
 import type { CartItem, CheckoutData } from "@/lib/types";
 
 import { getCartTotal, getLineTotal } from "@/lib/pricing";
+import { deliveryFeeLabel, isDeliveryCity } from "@/lib/delivery";
 
 export function buildOrderMessage(
   items: CartItem[],
@@ -47,8 +48,6 @@ export function buildOrderMessage(
   if (data.fulfillment === "Entrega") {
     const addressLine = [data.street, data.number].filter(Boolean).join(", ");
 
-    const cityLine = data.city || storeConfig.city;
-
     lines.push("");
     lines.push("*Endereço:*");
 
@@ -56,7 +55,10 @@ export function buildOrderMessage(
     if (data.complement) lines.push(data.complement);
     if (data.district) lines.push(data.district);
 
-    lines.push(cityLine);
+    if (isDeliveryCity(data.city)) {
+      lines.push(`*Cidade:* ${data.city}`);
+      lines.push(`*Frete:* ${deliveryFeeLabel}`);
+    }
 
     if (data.cep) {
       lines.push(`CEP: ${data.cep}`);

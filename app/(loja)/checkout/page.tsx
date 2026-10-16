@@ -11,6 +11,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Textarea } from "@/components/ui/textarea";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { deliveryFeeLabel, deliveryNotice, isDeliveryCity } from "@/lib/delivery";
 import { useStore } from "@/components/store-provider";
 import { formatCurrency, maskCep, maskPhone } from "@/lib/format";
 import { getCartTotal, getLineTotal } from "@/lib/pricing";
@@ -40,7 +42,7 @@ const emptyData: CheckoutData = {
   number: "",
   complement: "",
   district: "",
-  city: storeConfig.city,
+  city: "",
   landmark: "",
 };
 
@@ -63,11 +65,15 @@ export default function CheckoutPage() {
     key: K,
     value: CheckoutData[K],
   ) => {
-    setData((current) => ({ ...current, [key]: value }));
+    setData((current) => ({
+      ...current,
+      [key]: value,
+      ...(key === "fulfillment" && value === "Retirada" ? { city: "" } : {}),
+    }));
     setErrors((current) => {
-      if (!current[key]) return current;
       const next = { ...current };
       delete next[key as string];
+      if (key === "fulfillment") delete next.city;
       return next;
     });
   };
@@ -80,6 +86,7 @@ export default function CheckoutPage() {
       next.whatsapp = "Informe um WhatsApp válido.";
 
     if (isDelivery) {
+      if (!isDeliveryCity(data.city)) next.city = "Selecione uma cidade de entrega atendida.";
       if (!data.street.trim()) next.street = "Informe a rua.";
       if (!data.number.trim()) next.number = "Informe o número.";
       if (!data.district.trim()) next.district = "Informe o bairro.";
@@ -330,13 +337,30 @@ export default function CheckoutPage() {
                 </div>
 
                 <div className="flex flex-col gap-2 sm:col-span-2">
-                  <Label htmlFor="city">Cidade</Label>
-                  <Input
-                    id="city"
-                    value={data.city}
-                    onChange={(event) => update("city", event.target.value)}
-                    className="h-12 rounded-xl"
-                  />
+                  <Label htmlFor="city">Cidade de entrega</Label>
+                  <Select
+                    value={data.city || null}
+                    onValueChange={(value) => update("city", value ?? "")}
+                  >
+                    <SelectTrigger
+                      id="city"
+                      aria-required="true"
+                      aria-invalid={Boolean(errors.city)}
+                      aria-describedby={errors.city ? "city-error city-delivery" : "city-delivery"}
+                      className="w-full rounded-xl data-[size=default]:h-12"
+                    >
+                      <SelectValue placeholder="Selecione a cidade" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {storeConfig.deliveryCities.map((city) => (
+                        <SelectItem key={city} value={city}>{city}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  {errors.city && (
+                    <p id="city-error" className="text-xs text-destructive">{errors.city}</p>
+                  )}
+                  <p id="city-delivery" className="text-xs text-primary">{deliveryNotice}</p>
                 </div>
 
                 <div className="flex flex-col gap-2 sm:col-span-2">
@@ -393,6 +417,12 @@ export default function CheckoutPage() {
               </div>
 
               <p className="text-sm text-secondary-foreground/75">Pagamento: {data.payment}</p>
+              {isDelivery && (
+                <div className="flex flex-col gap-2 text-sm text-secondary-foreground/75">
+                  <p>Entrega: {isDeliveryCity(data.city) ? data.city : "Selecione a cidade"}</p>
+                  <p>Frete: {deliveryFeeLabel}</p>
+                </div>
+              )}
 
               <div className="mt-1 flex items-baseline justify-between gap-4">
                 <span className="eyebrow text-secondary-foreground/75">

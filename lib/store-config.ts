@@ -14,7 +14,14 @@ export const storeConfig = {
   whatsappDisplay: "(88) 999172635",
   instagram: "@makes_by_crismartins",
   mapsUrl: "https://maps.app.goo.gl/PjL37AE7pKBMtThu9 ",
-  /** Deixe null para exibir "Calculada no pedido" no resumo */
-  deliveryFee: null as number | null,
+  deliveryCities: [
+    "Nova Russas - CE",
+    "Ararendá - CE",
+    "Ipueiras - CE",
+    "Crateús - CE",
+    "Ipaporanga - CE",
+  ],
+  /** Frete grátis para todas as cidades atendidas. */
+  deliveryFee: 0,
   hours: "Seg a Sáb, 7:00h às 18h Dom 7:00 às 12h",
 } as const;

@@ -6,7 +6,7 @@ import { LinkButton } from '@/components/link-button'
 import { useStore } from '@/components/store-provider'
 import { getCartTotal, getLineTotal } from '@/lib/pricing'
 import { formatCurrency } from '@/lib/format'
-import { storeConfig } from '@/lib/store-config'
+import { deliveryNotice } from '@/lib/delivery'
 
 export default function SacolaPage() {
   const { items, subtotal, bagCount, updateQuantity, removeItem, clearBag } = useStore()
@@ -149,9 +149,7 @@ export default function SacolaPage() {
               <div className="flex items-center justify-between gap-4">
                 <dt className="text-secondary-foreground/75">Entrega</dt>
                 <dd className="text-secondary-foreground/75">
-                  {storeConfig.deliveryFee === null
-                    ? 'Combinada no pedido'
-                    : formatCurrency(storeConfig.deliveryFee)}
+                  {deliveryNotice}
                 </dd>
               </div>
             </dl>
