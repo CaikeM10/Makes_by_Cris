@@ -85,7 +85,11 @@ export default async function ProdutoPage({ params }: PageProps) {
               <p className="text-sm leading-relaxed text-muted-foreground">
                 {product.shortDescription}
               </p>
-              <p className="font-serif text-4xl text-primary">{formatCurrency(product.price)}</p>
+              <div className="flex flex-col gap-1">
+                <p className="font-serif text-4xl text-primary">{formatCurrency(product.price)}</p>
+                <p className="text-xs text-muted-foreground">no PIX, débito ou dinheiro</p>
+                <p className="text-sm text-muted-foreground">{formatCurrency(product.creditPrice)} no crédito</p>
+              </div>
             </div>
 
             <ProductPurchase product={product} />

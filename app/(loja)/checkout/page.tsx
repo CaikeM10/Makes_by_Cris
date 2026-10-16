@@ -13,6 +13,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Textarea } from "@/components/ui/textarea";
 import { useStore } from "@/components/store-provider";
 import { formatCurrency, maskCep, maskPhone } from "@/lib/format";
+import { getCartTotal, getLineTotal } from "@/lib/pricing";
 import { storeConfig } from "@/lib/store-config";
 import type {
   CheckoutData,
@@ -28,9 +29,6 @@ const payments: PaymentMethod[] = [
   "Dinheiro",
 ];
 const fulfillments: FulfillmentMethod[] = ["Retirada", "Entrega"];
-
-// Acréscimo aplicado somente quando o cliente escolhe cartão de crédito.
-const CREDIT_CARD_FEE_PERCENT = 15;
 
 const emptyData: CheckoutData = {
   name: "",
@@ -48,24 +46,17 @@ const emptyData: CheckoutData = {
 
 export default function CheckoutPage() {
   const router = useRouter();
-  const { items, subtotal, clearBag } = useStore();
+  const { items, clearBag } = useStore();
   const [data, setData] = useState<CheckoutData>(emptyData);
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   const isDelivery = data.fulfillment === "Entrega";
 
-  // O acréscimo é calculado uma única vez sobre o subtotal de todos os produtos.
-  const creditCardFee = useMemo(() => {
-    if (data.payment !== "Cartão de crédito") return 0;
-
-    return Number(((subtotal * CREDIT_CARD_FEE_PERCENT) / 100).toFixed(2));
-  }, [data.payment, subtotal]);
-
-  const orderTotal = subtotal + creditCardFee;
+  const orderTotal = getCartTotal(items, data.payment);
 
   const message = useMemo(
-    () => buildOrderMessage(items, data, orderTotal),
-    [items, data, orderTotal],
+    () => buildOrderMessage(items, data),
+    [items, data],
   );
 
   const update = <K extends keyof CheckoutData>(
@@ -385,48 +376,33 @@ export default function CheckoutPage() {
                     )}
                   </span>
                   <span className="shrink-0 font-medium">
-                    {formatCurrency(item.product.price * item.quantity)}
+                    {formatCurrency(getLineTotal(item, data.payment))}
                   </span>
                 </li>
               ))}
             </ul>
 
-            <div className="flex flex-col gap-2 border-t border-foreground/10 pt-4">
+            <div aria-live="polite" className="flex flex-col gap-2 border-t border-foreground/10 pt-4">
               <div className="flex items-center justify-between gap-4">
                 <span className="text-sm text-secondary-foreground/75">
-                  Subtotal
+                  Subtotal dos produtos
                 </span>
                 <span className="text-sm font-medium">
-                  {formatCurrency(subtotal)}
+                  {formatCurrency(orderTotal)}
                 </span>
               </div>
 
-              {creditCardFee > 0 && (
-                <div className="flex items-center justify-between gap-4">
-                  <span className="text-sm text-secondary-foreground/75">
-                    Acréscimo cartão ({CREDIT_CARD_FEE_PERCENT}%)
-                  </span>
-                  <span className="text-sm font-medium">
-                    {formatCurrency(creditCardFee)}
-                  </span>
-                </div>
-              )}
+              <p className="text-sm text-secondary-foreground/75">Pagamento: {data.payment}</p>
 
               <div className="mt-1 flex items-baseline justify-between gap-4">
                 <span className="eyebrow text-secondary-foreground/75">
-                  {creditCardFee > 0 ? "Total no cartão" : "Total"}
+                  Total
                 </span>
                 <span className="font-serif text-3xl text-primary">
                   {formatCurrency(orderTotal)}
                 </span>
               </div>
 
-              {creditCardFee > 0 && (
-                <p className="text-xs leading-relaxed text-secondary-foreground/70">
-                  Acréscimo de {CREDIT_CARD_FEE_PERCENT}% aplicado ao valor
-                  total do pedido para pagamento no cartão de crédito.
-                </p>
-              )}
             </div>
 
             <Button type="submit" size="lg" className="h-13 gap-2 rounded-full">

@@ -2,12 +2,11 @@ import { storeConfig } from "@/lib/store-config";
 import { formatCurrency } from "@/lib/format";
 import type { CartItem, CheckoutData } from "@/lib/types";
 
-const CREDIT_CARD_FEE_PERCENT = 15;
+import { getCartTotal, getLineTotal } from "@/lib/pricing";
 
 export function buildOrderMessage(
   items: CartItem[],
   data: CheckoutData,
-  total: number,
 ) {
   const lines: string[] = [];
 
@@ -19,41 +18,15 @@ export function buildOrderMessage(
 
   for (const item of items) {
     const variation = item.variation ? ` (${item.variation})` : "";
-    const lineTotal = item.product.price * item.quantity;
+    const lineTotal = getLineTotal(item, data.payment);
 
     lines.push(
       `${item.quantity}x ${item.product.name}${variation} — ${formatCurrency(lineTotal)}`,
     );
   }
 
-  // Calcula o subtotal original dos produtos
-  const subtotal = items.reduce(
-    (sum, item) => sum + item.product.price * item.quantity,
-    0,
-  );
-
-  // Calcula o acréscimo somente para cartão de crédito
-  const creditCardFee =
-    data.payment === "Cartão de crédito"
-      ? Number(((subtotal * CREDIT_CARD_FEE_PERCENT) / 100).toFixed(2))
-      : 0;
-
   lines.push("");
-
-  if (creditCardFee > 0) {
-    lines.push(`*Subtotal:* ${formatCurrency(subtotal)}`);
-
-    lines.push(
-      `*Acréscimo cartão (${CREDIT_CARD_FEE_PERCENT}%):* ${formatCurrency(creditCardFee)}`,
-    );
-
-    lines.push("");
-
-    lines.push(`*Total no cartão:* ${formatCurrency(total)}`);
-  } else {
-    lines.push(`*Total:* ${formatCurrency(total)}`);
-  }
-
+  lines.push(`*Total:* ${formatCurrency(getCartTotal(items, data.payment))}`);
   lines.push("");
 
   lines.push("*Cliente:*");

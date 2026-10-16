@@ -4,11 +4,14 @@ import Link from 'next/link'
 import { ArrowRight, Minus, Plus, ShoppingBag, Trash2 } from 'lucide-react'
 import { LinkButton } from '@/components/link-button'
 import { useStore } from '@/components/store-provider'
+import { getCartTotal, getLineTotal } from '@/lib/pricing'
 import { formatCurrency } from '@/lib/format'
 import { storeConfig } from '@/lib/store-config'
 
 export default function SacolaPage() {
   const { items, subtotal, bagCount, updateQuantity, removeItem, clearBag } = useStore()
+
+  const creditTotal = getCartTotal(items, 'Cartão de crédito')
 
   if (items.length === 0) {
     return (
@@ -121,7 +124,7 @@ export default function SacolaPage() {
                     </div>
 
                     <span className="font-serif text-lg text-primary">
-                      {formatCurrency(item.product.price * item.quantity)}
+                      {formatCurrency(getLineTotal(item, 'PIX'))}
                     </span>
                   </div>
                 </div>
@@ -136,8 +139,12 @@ export default function SacolaPage() {
 
             <dl className="flex flex-col gap-3 text-sm">
               <div className="flex items-center justify-between gap-4">
-                <dt className="text-secondary-foreground/75">Subtotal</dt>
-                <dd className="font-medium">{formatCurrency(subtotal)}</dd>
+                <dt className="text-secondary-foreground/75">Subtotal no PIX, débito ou dinheiro</dt>
+                <dd className="shrink-0 font-medium">{formatCurrency(subtotal)}</dd>
+              </div>
+              <div className="flex items-center justify-between gap-4">
+                <dt className="text-secondary-foreground/75">Total no crédito</dt>
+                <dd className="shrink-0 font-medium">{formatCurrency(creditTotal)}</dd>
               </div>
               <div className="flex items-center justify-between gap-4">
                 <dt className="text-secondary-foreground/75">Entrega</dt>
@@ -150,8 +157,8 @@ export default function SacolaPage() {
             </dl>
 
             <div className="flex items-baseline justify-between gap-4 border-t border-foreground/10 pt-4">
-              <span className="eyebrow text-secondary-foreground/75">Total</span>
-              <span className="font-serif text-3xl text-primary">{formatCurrency(subtotal)}</span>
+              <span className="eyebrow text-secondary-foreground/75">Total no PIX, débito ou dinheiro</span>
+              <span className="shrink-0 font-serif text-3xl text-primary">{formatCurrency(subtotal)}</span>
             </div>
 
             <LinkButton href="/checkout" size="lg" className="h-13 gap-2 rounded-full">

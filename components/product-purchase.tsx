@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { Minus, Plus } from 'lucide-react'
 import { AddToBagButton } from '@/components/add-to-bag-button'
 import { AnchorButton } from '@/components/link-button'
+import { getLineTotal } from '@/lib/pricing'
 import { formatCurrency } from '@/lib/format'
 import { storeConfig } from '@/lib/store-config'
 import { buildWhatsAppUrl } from '@/lib/whatsapp'
@@ -14,7 +15,8 @@ export function ProductPurchase({ product }: { product: Product }) {
   const [quantity, setQuantity] = useState(1)
   const [variation, setVariation] = useState<string | undefined>(product.variations?.[0])
 
-  const total = product.price * quantity
+  const total = getLineTotal({ product, quantity }, 'PIX')
+  const creditTotal = getLineTotal({ product, quantity }, 'Cartão de crédito')
   const questionUrl = buildWhatsAppUrl(
     `Olá! Gostaria de saber mais sobre o produto *${product.name}*${
       variation ? ` (${variation})` : ''
@@ -50,7 +52,7 @@ export function ProductPurchase({ product }: { product: Product }) {
 
       <div className="flex flex-col gap-3">
         <p className="eyebrow text-muted-foreground">Quantidade</p>
-        <div className="flex items-center gap-4">
+        <div className="flex flex-wrap items-center gap-4">
           <div className="flex items-center rounded-full border border-border">
             <button
               type="button"
@@ -75,9 +77,10 @@ export function ProductPurchase({ product }: { product: Product }) {
             </button>
           </div>
 
-          <p className="text-sm text-muted-foreground">
-            Total <span className="font-serif text-lg text-foreground">{formatCurrency(total)}</span>
-          </p>
+          <div aria-live="polite" className="text-sm text-muted-foreground">
+            <p>Total no PIX <span className="font-serif text-lg text-foreground">{formatCurrency(total)}</span></p>
+            <p>Total no crédito <span className="font-serif text-lg text-foreground">{formatCurrency(creditTotal)}</span></p>
+          </div>
         </div>
       </div>
 

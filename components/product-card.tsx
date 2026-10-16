@@ -61,7 +61,7 @@ export function ProductCard({ product }: { product: Product }) {
             </span>
 
             <span className="mt-1 text-[0.625rem] leading-tight text-muted-foreground">
-              {formatCurrency(product.creditPrice)} no cartão · até 6x
+              {formatCurrency(product.creditPrice)} no crédito · até 6x
             </span>
           </div>
 

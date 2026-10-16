@@ -2,6 +2,7 @@
 
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import type { CartItem, Product } from '@/lib/types'
+import { getCartTotal } from '@/lib/pricing'
 import { getProductById } from '@/lib/data/products'
 
 /**
@@ -156,7 +157,7 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
 
   const value = useMemo<StoreContextValue>(() => {
     const bagCount = items.reduce((total, item) => total + item.quantity, 0)
-    const subtotal = items.reduce((total, item) => total + item.product.price * item.quantity, 0)
+    const subtotal = getCartTotal(items, 'PIX')
 
     return {
       items,
