@@ -265,7 +265,34 @@ export default function CheckoutPage() {
               </legend>
 
               <div className="grid gap-5 sm:grid-cols-2">
-                <div className="flex flex-col gap-2">
+                <div className="flex flex-col gap-2 sm:col-span-2">
+                  <Label htmlFor="city">Cidade de entrega</Label>
+                  <Select
+                    value={data.city || null}
+                    onValueChange={(value) => update("city", value ?? "")}
+                  >
+                    <SelectTrigger
+                      id="city"
+                      aria-required="true"
+                      aria-invalid={Boolean(errors.city)}
+                      aria-describedby={errors.city ? "city-error city-delivery" : "city-delivery"}
+                      className="w-full rounded-xl data-[size=default]:h-12"
+                    >
+                      <SelectValue placeholder="Selecione a cidade" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {storeConfig.deliveryCities.map((city) => (
+                        <SelectItem key={city} value={city}>{city}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  {errors.city && (
+                    <p id="city-error" className="text-xs text-destructive">{errors.city}</p>
+                  )}
+                  <p id="city-delivery" className="text-xs text-primary">{deliveryNotice}</p>
+                </div>
+
+                <div className="flex flex-col gap-2 sm:col-span-2">
                   <Label htmlFor="cep">CEP</Label>
                   <Input
                     id="cep"
@@ -277,22 +304,6 @@ export default function CheckoutPage() {
                     placeholder="63700-000"
                     className="h-12 rounded-xl"
                   />
-                </div>
-
-                <div className="flex flex-col gap-2">
-                  <Label htmlFor="district">Bairro</Label>
-                  <Input
-                    id="district"
-                    value={data.district}
-                    onChange={(event) => update("district", event.target.value)}
-                    aria-invalid={Boolean(errors.district)}
-                    className="h-12 rounded-xl"
-                  />
-                  {errors.district && (
-                    <p className="text-xs text-destructive">
-                      {errors.district}
-                    </p>
-                  )}
                 </div>
 
                 <div className="flex flex-col gap-2 sm:col-span-2">
@@ -337,30 +348,19 @@ export default function CheckoutPage() {
                 </div>
 
                 <div className="flex flex-col gap-2 sm:col-span-2">
-                  <Label htmlFor="city">Cidade de entrega</Label>
-                  <Select
-                    value={data.city || null}
-                    onValueChange={(value) => update("city", value ?? "")}
-                  >
-                    <SelectTrigger
-                      id="city"
-                      aria-required="true"
-                      aria-invalid={Boolean(errors.city)}
-                      aria-describedby={errors.city ? "city-error city-delivery" : "city-delivery"}
-                      className="w-full rounded-xl data-[size=default]:h-12"
-                    >
-                      <SelectValue placeholder="Selecione a cidade" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {storeConfig.deliveryCities.map((city) => (
-                        <SelectItem key={city} value={city}>{city}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  {errors.city && (
-                    <p id="city-error" className="text-xs text-destructive">{errors.city}</p>
+                  <Label htmlFor="district">Bairro</Label>
+                  <Input
+                    id="district"
+                    value={data.district}
+                    onChange={(event) => update("district", event.target.value)}
+                    aria-invalid={Boolean(errors.district)}
+                    className="h-12 rounded-xl"
+                  />
+                  {errors.district && (
+                    <p className="text-xs text-destructive">
+                      {errors.district}
+                    </p>
                   )}
-                  <p id="city-delivery" className="text-xs text-primary">{deliveryNotice}</p>
                 </div>
 
                 <div className="flex flex-col gap-2 sm:col-span-2">
