@@ -1,5 +1,7 @@
 "use client";
 
+import { fulfillmentLabels, fulfillmentLocations, getFulfillmentLocation } from "@/lib/fulfillment";
+
 import { useMemo, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -12,14 +14,13 @@ import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { deliveryFeeLabel, deliveryNotice, isDeliveryCity } from "@/lib/delivery";
+import { deliveryFeeLabel, deliveryNotice } from "@/lib/delivery";
 import { useStore } from "@/components/store-provider";
 import { formatCurrency, maskCep, maskPhone } from "@/lib/format";
 import { getCartTotal, getLineTotal } from "@/lib/pricing";
 import { storeConfig } from "@/lib/store-config";
 import type {
   CheckoutData,
-  FulfillmentMethod,
   PaymentMethod,
 } from "@/lib/types";
 import { buildOrderMessage, buildWhatsAppUrl } from "@/lib/whatsapp";
@@ -30,13 +31,11 @@ const payments: PaymentMethod[] = [
   "Cartão de débito",
   "Dinheiro",
 ];
-const fulfillments: FulfillmentMethod[] = ["Retirada", "Entrega"];
 
 const emptyData: CheckoutData = {
   name: "",
   whatsapp: "",
   payment: "PIX",
-  fulfillment: "Retirada",
   cep: "",
   street: "",
   number: "",
@@ -52,7 +51,8 @@ export default function CheckoutPage() {
   const [data, setData] = useState<CheckoutData>(emptyData);
   const [errors, setErrors] = useState<Record<string, string>>({});
 
-  const isDelivery = data.fulfillment === "Entrega";
+  const location = getFulfillmentLocation(data.city);
+  const isDelivery = location?.type === "home-delivery";
 
   const orderTotal = getCartTotal(items, data.payment);
 
@@ -68,12 +68,14 @@ export default function CheckoutPage() {
     setData((current) => ({
       ...current,
       [key]: value,
-      ...(key === "fulfillment" && value === "Retirada" ? { city: "" } : {}),
+      ...(key === "city" ? { cep: "", street: "", number: "", complement: "", district: "", landmark: "" } : {}),
     }));
     setErrors((current) => {
       const next = { ...current };
       delete next[key as string];
-      if (key === "fulfillment") delete next.city;
+      if (key === "city") {
+        for (const field of ["cep", "street", "number", "complement", "district", "landmark"]) delete next[field];
+      }
       return next;
     });
   };
@@ -85,8 +87,9 @@ export default function CheckoutPage() {
     if (data.whatsapp.replace(/\D/g, "").length < 10)
       next.whatsapp = "Informe um WhatsApp válido.";
 
+    if (!location) next.city = "Selecione uma cidade atendida.";
+
     if (isDelivery) {
-      if (!isDeliveryCity(data.city)) next.city = "Selecione uma cidade de entrega atendida.";
       if (!data.street.trim()) next.street = "Informe a rua.";
       if (!data.number.trim()) next.number = "Informe o número.";
       if (!data.district.trim()) next.district = "Informe o bairro.";
@@ -226,47 +229,8 @@ export default function CheckoutPage() {
             <legend className="eyebrow mb-3 text-muted-foreground">
               Como deseja receber
             </legend>
-            <RadioGroup
-              value={data.fulfillment}
-              onValueChange={(value) =>
-                update("fulfillment", value as FulfillmentMethod)
-              }
-              className="grid gap-3 sm:grid-cols-2"
-            >
-              {fulfillments.map((option) => (
-                <Label
-                  key={option}
-                  htmlFor={`fulfillment-${option}`}
-                  className="flex cursor-pointer items-start gap-3 rounded-xl border border-border px-4 py-3.5 text-sm transition-colors has-[[data-state=checked]]:border-primary has-[[data-state=checked]]:bg-secondary"
-                >
-                  <RadioGroupItem
-                    id={`fulfillment-${option}`}
-                    value={option}
-                    className="mt-0.5"
-                  />
-                  <span className="flex flex-col gap-0.5">
-                    {option}
-                    <span className="text-xs leading-relaxed text-muted-foreground">
-                      {option === "Retirada"
-                        ? `Combine o horário em ${storeConfig.city}`
-                        : "Informe o endereço para entrega"}
-                    </span>
-                  </span>
-                </Label>
-              ))}
-            </RadioGroup>
-          </fieldset>
-
-          {/* Endereço */}
-          {isDelivery && (
-            <fieldset className="flex flex-col gap-5">
-              <legend className="eyebrow mb-3 text-muted-foreground">
-                Endereço de entrega
-              </legend>
-
-              <div className="grid gap-5 sm:grid-cols-2">
                 <div className="flex flex-col gap-2 sm:col-span-2">
-                  <Label htmlFor="city">Cidade de entrega</Label>
+                  <Label htmlFor="city">Cidade de recebimento</Label>
                   <Select
                     value={data.city || null}
                     onValueChange={(value) => update("city", value ?? "")}
@@ -281,7 +245,7 @@ export default function CheckoutPage() {
                       <SelectValue placeholder="Selecione a cidade" />
                     </SelectTrigger>
                     <SelectContent>
-                      {storeConfig.deliveryCities.map((city) => (
+                      {fulfillmentLocations.map(({ city }) => (
                         <SelectItem key={city} value={city}>{city}</SelectItem>
                       ))}
                     </SelectContent>
@@ -292,6 +256,20 @@ export default function CheckoutPage() {
                   <p id="city-delivery" className="text-xs text-primary">{deliveryNotice}</p>
                 </div>
 
+            {location && (
+              <div aria-live="polite" className="rounded-xl bg-secondary p-4 text-sm">
+                <p className="font-medium">{fulfillmentLabels[location.type]}</p>
+                {location.type !== "home-delivery" && <p>{location.locationName}</p>}
+                <p>{location.city}</p>
+                {location.type === "delivery-point" && <p>{location.day}</p>}
+              </div>
+            )}
+          </fieldset>
+
+          {isDelivery && (
+            <fieldset className="flex flex-col gap-5">
+              <legend className="eyebrow mb-3 text-muted-foreground">Endereço de entrega em Poranga - CE</legend>
+              <div className="grid gap-5 sm:grid-cols-2">
                 <div className="flex flex-col gap-2 sm:col-span-2">
                   <Label htmlFor="cep">CEP</Label>
                   <Input
@@ -417,9 +395,11 @@ export default function CheckoutPage() {
               </div>
 
               <p className="text-sm text-secondary-foreground/75">Pagamento: {data.payment}</p>
-              {isDelivery && (
+              {location && (
                 <div className="flex flex-col gap-2 text-sm text-secondary-foreground/75">
-                  <p>Entrega: {isDeliveryCity(data.city) ? data.city : "Selecione a cidade"}</p>
+                  <p>{fulfillmentLabels[location.type]}: {location.city}</p>
+                  {location.type !== "home-delivery" && <p>Local: {location.locationName}</p>}
+                  {location.type === "delivery-point" && <p>Dia: {location.day}</p>}
                   <p>Frete: {deliveryFeeLabel}</p>
                 </div>
               )}

@@ -53,7 +53,6 @@ export type CheckoutData = {
   name: string;
   whatsapp: string;
   payment: PaymentMethod;
-  fulfillment: FulfillmentMethod;
   cep: string;
   street: string;
   number: string;
