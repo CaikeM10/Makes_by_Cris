@@ -1,5 +1,8 @@
 # Fundação do Admin — configuração e validação
 
+> Este documento registra a fundação de autenticação. A etapa posterior de
+> listagem/edição e sua migration estão documentadas em [CATALOG.md](CATALOG.md).
+
 Escopo: Supabase Auth, autorização explícita, login, recuperação e shell. Nenhum
 produto foi migrado e nenhuma função de edição está disponível. A auditoria
 anterior não estava presente no checkout; o escopo fornecido na tarefa foi seguido.

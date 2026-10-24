@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { AdminNavigation } from "@/components/admin/admin-navigation";
 import { BrandLogo } from "@/components/brand-logo";
 import { LogoutButton } from "@/components/admin/logout-button";
 import { CatalogLink } from "@/components/admin/catalog-link";
@@ -12,7 +12,7 @@ export default async function ProtectedLayout({ children }: { children: React.Re
       <BrandLogo size="lg" className="admin-sidebar-logo" />
       <nav aria-label="Navegação administrativa">
         <p className="admin-eyebrow">Editor do Catálogo</p>
-        <Link className="admin-nav-active" href="/admin" aria-current="page">Início</Link>
+        <AdminNavigation />
         <p className="admin-eyebrow admin-store-label">Loja</p>
         <CatalogLink />
       </nav>
