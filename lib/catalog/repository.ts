@@ -8,10 +8,13 @@ export type ProductRow = {
 };
 export type AdminProduct = Omit<ProductRow, "price" | "credit_price"> & { price: string; credit_price: string };
 export type ProductPatch = Pick<AdminProduct, "name" | "brand" | "category_id" | "short_description" | "description" | "price" | "credit_price" | "active" | "available" | "featured" | "best_seller" | "gift_section">;
+export type ProductInsert = ProductPatch & { id: string; slug: string; image: string };
 export type CatalogFilters = { q: string; filter: string; category: string; page: number };
 export interface CatalogRepository {
   categories(): Promise<CatalogCategory[]>;
   list(filters: CatalogFilters): Promise<{ products: AdminProduct[]; count: number }>;
   get(id: string): Promise<AdminProduct | null>;
-  update(id: string, version: string, patch: ProductPatch): Promise<boolean>;
+  update(id: string, version: string, patch: ProductPatch & { image?: string }): Promise<boolean>;
+  slugExists(slug: string): Promise<boolean>;
+  insert(product: ProductInsert): Promise<"created" | "slug-conflict">;
 }

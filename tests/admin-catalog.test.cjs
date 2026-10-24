@@ -7,7 +7,7 @@ const vm = require('node:vm');
 function load(file, mocks = {}) {
   const module = { exports: {} };
   const source = ts.transpileModule(fs.readFileSync(path.resolve(__dirname, '..', file), 'utf8'), { compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022 } }).outputText;
-  vm.runInNewContext(source, { module, exports: module.exports, Date, require: name => {
+  vm.runInNewContext(source, { module, exports: module.exports, Date, process: { env: {} }, require: name => {
     if (name === 'server-only') return {};
     if (name in mocks) return mocks[name];
     if (name.startsWith('./')) return load('lib/catalog/' + name.slice(2) + '.ts', mocks);
@@ -75,6 +75,7 @@ test('action verifica autorização antes de consultar ou escrever', async () =>
     '@/lib/admin/auth': { requireAdmin: async () => { throw Error('denied'); } },
     '@/lib/catalog/supabase-repository': { createCatalogRepository: () => assert.fail() },
     '@/lib/catalog/update-product': {}, '@/lib/catalog/validation': validation,
+    '@/lib/catalog/save-product': {}, '@/lib/catalog/product-storage': {},
     'next/cache': {}, 'next/navigation': {},
   });
   await assert.rejects(saveProduct('p-21', version, {}, new Map()), /denied/);

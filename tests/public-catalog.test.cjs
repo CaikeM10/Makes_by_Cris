@@ -8,7 +8,7 @@ const root = path.resolve(__dirname, '..');
 function load(file) {
   const module = { exports: {} };
   const code = ts.transpileModule(fs.readFileSync(path.join(root, file), 'utf8'), { compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022 } }).outputText;
-  vm.runInNewContext(code, { module, exports: module.exports, require(name) {
+  vm.runInNewContext(code, { module, exports: module.exports, process: { env: {} }, require(name) {
     if (name === 'server-only') return {};
     if (name.startsWith('@/')) return load(name.slice(2) + '.ts');
     if (name.startsWith('./')) return load(path.join(path.dirname(file), name) + '.ts');

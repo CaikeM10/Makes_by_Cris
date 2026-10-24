@@ -1,5 +1,8 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  experimental: {
+    serverActions: { bodySizeLimit: '6mb' },
+  },
   allowedDevOrigins: ['192.168.3.9'],
   images: {
     unoptimized: true,

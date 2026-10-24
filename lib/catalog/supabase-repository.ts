@@ -41,5 +41,16 @@ export function createCatalogRepository(client: SupabaseClient): CatalogReposito
       if (error) throw new Error("catalog-write");
       return data?.length === 1;
     },
+    async slugExists(slug) {
+      const { data, error } = await client.from("products").select("id").eq("slug", slug).maybeSingle();
+      if (error) throw new Error("catalog-read");
+      return Boolean(data);
+    },
+    async insert(product) {
+      const { error } = await client.from("products").insert(product);
+      if (error?.code === "23505" && error.message.includes("products_slug_key")) return "slug-conflict";
+      if (error) throw new Error("catalog-write");
+      return "created";
+    },
   };
 }
