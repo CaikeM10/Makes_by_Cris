@@ -2,7 +2,6 @@ import { Analytics } from "@vercel/analytics/next";
 import type { Metadata, Viewport } from "next";
 import { Manrope, Cormorant_Garamond } from "next/font/google";
 
-import { StoreProvider } from "@/components/store-provider";
 import { Toaster } from "@/components/ui/sonner";
 import { storeConfig } from "@/lib/store-config";
 
@@ -70,7 +69,7 @@ export default function RootLayout({
       className={`${manrope.variable} ${cormorant.variable} bg-background`}
     >
       <body className="font-sans antialiased">
-        <StoreProvider>{children}</StoreProvider>
+        {children}
 
         <Toaster position="top-center" />
 

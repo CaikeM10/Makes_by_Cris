@@ -1,14 +1,14 @@
 import type { Metadata } from 'next'
 import { CategoryCard } from '@/components/category-card'
-import { categories } from '@/lib/data/categories'
-import { getProductsByCategory } from '@/lib/data/products'
+import { getPublicCatalog } from '@/lib/catalog/public-server'
 
 export const metadata: Metadata = {
   title: 'Categorias',
   description: 'Explore maquiagem, perfumes, cabelos, skincare, corpo e banho e acessórios.',
 }
 
-export default function CategoriasPage() {
+export default async function CategoriasPage() {
+  const { categories, getProductsByCategory } = await getPublicCatalog()
   const activeCategories = categories.filter((category) => category.active)
 
   return (

@@ -1,9 +1,9 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  allowedDevOrigins: ['192.168.3.9'],
-  typescript: {
-    ignoreBuildErrors: true,
+  experimental: {
+    serverActions: { bodySizeLimit: '6mb' },
   },
+  allowedDevOrigins: ['192.168.3.9'],
   images: {
     unoptimized: true,
   },

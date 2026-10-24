@@ -1,9 +1,10 @@
+import { fulfillmentLabels, getFulfillmentLocation } from "@/lib/fulfillment";
 import { storeConfig } from "@/lib/store-config";
 import { formatCurrency } from "@/lib/format";
 import type { CartItem, CheckoutData } from "@/lib/types";
 
 import { getCartTotal, getLineTotal } from "@/lib/pricing";
-import { deliveryFeeLabel, isDeliveryCity } from "@/lib/delivery";
+import { deliveryFeeLabel } from "@/lib/delivery";
 
 export function buildOrderMessage(
   items: CartItem[],
@@ -42,10 +43,17 @@ export function buildOrderMessage(
   lines.push(data.payment);
   lines.push("");
 
-  lines.push("*Tipo:*");
-  lines.push(data.fulfillment);
+  const location = getFulfillmentLocation(data.city);
+  if (location) {
+    lines.push("*Tipo:*");
+    lines.push(fulfillmentLabels[location.type]);
+    lines.push("*Cidade:* " + location.city);
+    lines.push("*Frete:* " + deliveryFeeLabel);
+    if (location.type !== "home-delivery") lines.push("*Local de retirada:* " + location.locationName);
+    if (location.type === "delivery-point") lines.push("*Dia:* " + location.day);
+  }
 
-  if (data.fulfillment === "Entrega") {
+  if (location?.type === "home-delivery") {
     const addressLine = [data.street, data.number].filter(Boolean).join(", ");
 
     lines.push("");
@@ -54,11 +62,6 @@ export function buildOrderMessage(
     if (addressLine) lines.push(addressLine);
     if (data.complement) lines.push(data.complement);
     if (data.district) lines.push(data.district);
-
-    if (isDeliveryCity(data.city)) {
-      lines.push(`*Cidade:* ${data.city}`);
-      lines.push(`*Frete:* ${deliveryFeeLabel}`);
-    }
 
     if (data.cep) {
       lines.push(`CEP: ${data.cep}`);

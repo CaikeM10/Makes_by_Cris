@@ -1,0 +1,4 @@
+import type { AdminProduct } from "@/lib/catalog/repository";
+export function ProductPriceFields({ product, errors }: { product: Pick<AdminProduct, "price" | "credit_price">; errors?: Record<string, string> }) {
+  return <fieldset className="catalog-panel"><legend>Preços</legend><p className="admin-help">PIX, dinheiro e débito usam o preço à vista. Crédito é informado separadamente.</p><div className="catalog-two-columns">{([['price', 'Preço PIX (R$)'], ['credit_price', 'Preço crédito (R$)']] as const).map(([key, label]) => <div className="admin-field" key={key}><label htmlFor={key}>{label}</label><input id={key} name={key} inputMode="decimal" required defaultValue={product[key].replace('.', ',')} aria-invalid={!!errors?.[key]} aria-describedby={errors?.[key] ? `${key}-error` : undefined} />{errors?.[key] && <p className="catalog-field-error" id={`${key}-error`}>{errors[key]}</p>}</div>)}</div></fieldset>;
+}

@@ -4,17 +4,11 @@ import { LinkButton } from "@/components/link-button";
 import { CategoryCarousel } from "@/components/category-carousel";
 import { ProductGrid } from "@/components/product-grid";
 import { SectionHeading } from "@/components/section-heading";
-import { categories } from "@/lib/data/categories";
-import {
-  bestSellers,
-  featuredProducts,
-  giftProducts,
-  getProductsByCategory,
-  newArrivals,
-} from "@/lib/data/products";
+import { getPublicCatalog } from "@/lib/catalog/public-server";
 import { storeConfig } from "@/lib/store-config";
 
-export default function HomePage() {
+export default async function HomePage() {
+  const { categories, bestSellers, featuredProducts, giftProducts, getProductsByCategory, newArrivals } = await getPublicCatalog();
   const activeCategories = categories.filter((category) => category.active);
 
   const categoryCounts = Object.fromEntries(

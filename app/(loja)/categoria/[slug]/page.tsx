@@ -3,16 +3,12 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { ChevronRight } from 'lucide-react'
 import { ProductBrowser } from '@/components/product-browser'
-import { categories, getCategoryBySlug } from '@/lib/data/categories'
-import { getProductsByCategory } from '@/lib/data/products'
+import { getPublicCatalog } from '@/lib/catalog/public-server'
 
 type PageProps = { params: Promise<{ slug: string }> }
 
-export function generateStaticParams() {
-  return categories.map((category) => ({ slug: category.slug }))
-}
-
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  const { getCategoryBySlug } = await getPublicCatalog()
   const { slug } = await params
   const category = getCategoryBySlug(slug)
   if (!category) return { title: 'Categoria não encontrada' }
@@ -21,6 +17,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 }
 
 export default async function CategoriaPage({ params }: PageProps) {
+  const { getCategoryBySlug, getProductsByCategory } = await getPublicCatalog()
   const { slug } = await params
   const category = getCategoryBySlug(slug)
 

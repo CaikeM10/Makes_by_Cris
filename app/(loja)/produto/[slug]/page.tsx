@@ -6,17 +6,13 @@ import { FavoriteButton } from '@/components/favorite-button'
 import { ProductGrid } from '@/components/product-grid'
 import { ProductPurchase } from '@/components/product-purchase'
 import { SectionHeading } from '@/components/section-heading'
-import { getCategoryName } from '@/lib/data/categories'
-import { getProductBySlug, getProductsByCategory, products } from '@/lib/data/products'
+import { getPublicCatalog } from '@/lib/catalog/public-server'
 import { formatCurrency } from '@/lib/format'
 
 type PageProps = { params: Promise<{ slug: string }> }
 
-export function generateStaticParams() {
-  return products.map((product) => ({ slug: product.slug }))
-}
-
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  const { getProductBySlug } = await getPublicCatalog()
   const { slug } = await params
   const product = getProductBySlug(slug)
   if (!product) return { title: 'Produto não encontrado' }
@@ -29,6 +25,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 }
 
 export default async function ProdutoPage({ params }: PageProps) {
+  const { getProductBySlug, getCategoryName, getProductsByCategory } = await getPublicCatalog()
   const { slug } = await params
   const product = getProductBySlug(slug)
 

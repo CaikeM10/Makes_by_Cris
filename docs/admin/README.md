@@ -1,5 +1,10 @@
 # Referências do Painel Administrativo
 
+Implementação atual: [arquitetura](ARCHITECTURE.md), [configuração da fundação](SETUP.md)
+e [catálogo administrativo: importação e aceite](CATALOG.md).
+
+Migração pública coordenada: [Supabase como fonte canônica](PUBLIC-CATALOG.md).
+
 Estas imagens são referências visuais criadas na v0.
 
 Elas NÃO representam a lógica definitiva do sistema.
