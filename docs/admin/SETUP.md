@@ -14,7 +14,7 @@ Copie `.env.example` para `.env.local` (já ignorado pelo Git) e configure:
 | Variável | Valor |
 | --- | --- |
 | `NEXT_PUBLIC_SUPABASE_URL` | URL do projeto Supabase |
-| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Chave pública anon do projeto; também aceita publishable key |
+| `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` | Chave pública publishable do projeto |
 | `NEXT_PUBLIC_SITE_URL` | Origem canônica do app/catálogo, sem caminho, query ou fragmento |
 
 Exemplo local: `http://localhost:3000`. Em produção, use sua origem HTTPS.

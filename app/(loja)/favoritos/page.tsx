@@ -4,9 +4,10 @@ import { Heart } from 'lucide-react'
 import { LinkButton } from '@/components/link-button'
 import { ProductGrid } from '@/components/product-grid'
 import { useStore } from '@/components/store-provider'
-import { products } from '@/lib/data/products'
+import { useCatalog } from '@/components/catalog-provider'
 
 export default function FavoritosPage() {
+  const { products } = useCatalog()
   const { favorites } = useStore()
   const list = products.filter((product) => favorites.includes(product.id))
 

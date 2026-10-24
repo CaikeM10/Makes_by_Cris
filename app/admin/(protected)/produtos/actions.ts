@@ -14,5 +14,7 @@ export async function saveProduct(id: string, version: string, _state: ProductFo
   if (result.error) return result;
   revalidatePath("/admin/produtos");
   revalidatePath(`/admin/produtos/${encodeURIComponent(id)}/editar`);
+  // Covers all product/category pages, Home and the shared selection snapshot.
+  revalidatePath("/(loja)", "layout");
   redirect("/admin/produtos?salvo=1");
 }

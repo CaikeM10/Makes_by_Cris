@@ -4,8 +4,7 @@ import { useDeferredValue, useEffect, useMemo, useRef, useState } from 'react'
 import Link from 'next/link'
 import { ArrowUpRight, Search, SearchX, X } from 'lucide-react'
 import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog'
-import { searchProducts } from '@/lib/data/products'
-import { categories, getCategoryName, searchCategories } from '@/lib/data/categories'
+import { useCatalog } from '@/components/catalog-provider'
 import { formatCurrency, normalizeText } from '@/lib/format'
 
 const suggestions = ['batom', 'perfume', 'base', 'hidratante', 'skincare', 'pincéis']
@@ -35,6 +34,7 @@ function HighlightedName({ name, term }: { name: string; term: string }) {
 }
 
 export function SearchOverlay({ open, onOpenChange }: SearchOverlayProps) {
+  const { searchProducts, categories, getCategoryName, searchCategories } = useCatalog()
   const [query, setQuery] = useState('')
   const inputRef = useRef<HTMLInputElement>(null)
 
@@ -45,8 +45,8 @@ export function SearchOverlay({ open, onOpenChange }: SearchOverlayProps) {
     if (!open) setQuery('')
   }, [open])
 
-  const results = useMemo(() => searchProducts(deferredQuery), [deferredQuery])
-  const matchedCategories = useMemo(() => searchCategories(deferredQuery), [deferredQuery])
+  const results = useMemo(() => searchProducts(deferredQuery), [deferredQuery, searchProducts])
+  const matchedCategories = useMemo(() => searchCategories(deferredQuery), [deferredQuery, searchCategories])
 
   const hasQuery = query.trim().length > 0
   const isEmpty = hasQuery && results.length === 0 && matchedCategories.length === 0

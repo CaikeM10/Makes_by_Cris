@@ -1,5 +1,9 @@
 # Primeira fatia do editor: listar, editar e salvar
 
+> Registro da primeira fase. A loja pública agora também lê Supabase:
+> consulte [PUBLIC-CATALOG.md](PUBLIC-CATALOG.md). A expectativa de preços
+> públicos antigos nos passos abaixo aplica-se somente à fase anterior.
+
 ## Preparação do ambiente
 
 Não existe `.env.local` neste checkout. Siga `SETUP.md` para configurar Supabase

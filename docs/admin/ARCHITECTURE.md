@@ -1,5 +1,9 @@
 # Editor administrativo do catálogo
 
+> A fase abaixo registra a primeira fatia administrativa. A migração posterior
+> da loja para o Supabase está em [PUBLIC-CATALOG.md](PUBLIC-CATALOG.md): ela
+> substitui a fronteira de dados estáticos descrita neste registro histórico.
+
 ## Fronteiras nesta fase
 
 O catálogo público continua usando `lib/data/products.ts` e

@@ -3,7 +3,8 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import type { CartItem, Product } from '@/lib/types'
 import { getCartTotal } from '@/lib/pricing'
-import { getProductById } from '@/lib/data/products'
+import { useCatalog } from '@/components/catalog-provider'
+import { parseStoredBag, parseStoredFavorites, resolveStoredBag, type StoredLine } from '@/lib/catalog/stored-selection'
 
 /**
  * A sacola e os favoritos são estado de interface do visitante: não existe cadastro,
@@ -14,7 +15,6 @@ const BAG_KEY = 'makes:sacola'
 const FAVORITES_KEY = 'makes:favoritos'
 const memoryStorageFallback = new Map<string, string>()
 
-type StoredLine = { productId: string; quantity: number; variation?: string }
 
 /**
  * O armazenamento pode falhar em navegação privada, webviews e contextos com
@@ -42,31 +42,6 @@ function setStoredValue(key: string, value: string) {
   }
 }
 
-function readBag(): CartItem[] {
-  try {
-    const raw = getStoredValue(BAG_KEY)
-    if (!raw) return []
-    const parsed = JSON.parse(raw) as StoredLine[]
-    return parsed.flatMap((line) => {
-      const product = getProductById(line.productId)
-      if (!product) return []
-      return [{ product, quantity: line.quantity, variation: line.variation }]
-    })
-  } catch {
-    return []
-  }
-}
-
-function readFavorites(): string[] {
-  try {
-    const raw = getStoredValue(FAVORITES_KEY)
-    if (!raw) return []
-    const parsed = JSON.parse(raw) as string[]
-    return parsed.filter((id) => Boolean(getProductById(id)))
-  } catch {
-    return []
-  }
-}
 
 type StoreContextValue = {
   items: CartItem[]
@@ -85,31 +60,28 @@ type StoreContextValue = {
 
 const StoreContext = createContext<StoreContextValue | null>(null)
 
-const sameLine = (item: CartItem, productId: string, variation?: string) =>
-  item.product.id === productId && (item.variation ?? '') === (variation ?? '')
+const sameLine = (item: StoredLine, productId: string, variation?: string) =>
+  item.productId === productId && (item.variation ?? '') === (variation ?? '')
 
 export function StoreProvider({ children }: { children: React.ReactNode }) {
-  const [items, setItems] = useState<CartItem[]>([])
+  const { products } = useCatalog()
+  const [lines, setLines] = useState<StoredLine[]>([])
+  const items = useMemo(() => resolveStoredBag(lines, products), [lines, products])
   const [favorites, setFavorites] = useState<string[]>([])
   const [lastAdded, setLastAdded] = useState<number | null>(null)
   const [hydrated, setHydrated] = useState(false)
 
   // Restaura depois da hidratação para o HTML do servidor e do cliente combinarem.
   useEffect(() => {
-    setItems(readBag())
-    setFavorites(readFavorites())
+    setLines(parseStoredBag(getStoredValue(BAG_KEY)))
+    setFavorites(parseStoredFavorites(getStoredValue(FAVORITES_KEY)))
     setHydrated(true)
   }, [])
 
   useEffect(() => {
     if (!hydrated) return
-    const lines: StoredLine[] = items.map((item) => ({
-      productId: item.product.id,
-      quantity: item.quantity,
-      variation: item.variation,
-    }))
     setStoredValue(BAG_KEY, JSON.stringify(lines))
-  }, [items, hydrated])
+  }, [lines, hydrated])
 
   useEffect(() => {
     if (!hydrated) return
@@ -117,7 +89,7 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
   }, [favorites, hydrated])
 
   const addItem = useCallback((product: Product, quantity = 1, variation?: string) => {
-    setItems((current) => {
+    setLines((current) => {
       const existing = current.find((item) => sameLine(item, product.id, variation))
       if (existing) {
         return current.map((item) =>
@@ -126,17 +98,17 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
             : item,
         )
       }
-      return [...current, { product, quantity, variation }]
+      return [...current, { productId: product.id, quantity, variation }]
     })
     setLastAdded(Date.now())
   }, [])
 
   const removeItem = useCallback((productId: string, variation?: string) => {
-    setItems((current) => current.filter((item) => !sameLine(item, productId, variation)))
+    setLines((current) => current.filter((item) => !sameLine(item, productId, variation)))
   }, [])
 
   const updateQuantity = useCallback((productId: string, quantity: number, variation?: string) => {
-    setItems((current) =>
+    setLines((current) =>
       current.flatMap((item) => {
         if (!sameLine(item, productId, variation)) return [item]
         if (quantity < 1) return []
@@ -145,7 +117,7 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
     )
   }, [])
 
-  const clearBag = useCallback(() => setItems([]), [])
+  const clearBag = useCallback(() => setLines([]), [])
 
   const toggleFavorite = useCallback((productId: string) => {
     setFavorites((current) =>
