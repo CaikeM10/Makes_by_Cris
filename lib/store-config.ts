@@ -9,9 +9,9 @@ export const storeConfig = {
   description:
     "Catálogo digital de maquiagem, perfumes, skincare e cuidados selecionados por Cris Martins. Escolha seus produtos e finalize o pedido pelo WhatsApp.",
   city: "Poranga - CE",
-  /** Número de exemplo — substitua pelo número real da loja (DDI + DDD + número) */
-  whatsapp: "5588999172635",
-  whatsappDisplay: "(88) 999172635",
+  /** WhatsApp oficial (DDI + DDD + número) */
+  whatsapp: "558896803746",
+  whatsappDisplay: "+55 88 9680-3746",
   instagram: "@makes_by_crismartins",
   mapsUrl: "https://maps.app.goo.gl/PjL37AE7pKBMtThu9 ",
   /** Frete grátis para todas as cidades atendidas. */

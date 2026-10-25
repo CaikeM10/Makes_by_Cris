@@ -53,7 +53,7 @@ export type CheckoutData = {
   name: string;
   whatsapp: string;
   payment: PaymentMethod;
-  cep: string;
+  receivingMode: "store-pickup" | "delivery";
   street: string;
   number: string;
   complement: string;
