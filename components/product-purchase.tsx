@@ -16,7 +16,7 @@ export function ProductPurchase({ product }: { product: Product }) {
   const [variation, setVariation] = useState<string | undefined>(product.variations?.[0])
 
   const total = getLineTotal({ product, quantity }, 'PIX')
-  const creditTotal = getLineTotal({ product, quantity }, 'Cartão de crédito')
+  const creditTotal = product.creditPrice === null ? null : getLineTotal({ product, quantity }, 'Cartão de crédito')
   const questionUrl = buildWhatsAppUrl(
     `Olá! Gostaria de saber mais sobre o produto *${product.name}*${
       variation ? ` (${variation})` : ''
@@ -79,7 +79,7 @@ export function ProductPurchase({ product }: { product: Product }) {
 
           <div aria-live="polite" className="text-sm text-muted-foreground">
             <p>Total no PIX <span className="font-serif text-lg text-foreground">{formatCurrency(total)}</span></p>
-            <p>Total no crédito <span className="font-serif text-lg text-foreground">{formatCurrency(creditTotal)}</span></p>
+            {creditTotal !== null && <p>Total no crédito <span className="font-serif text-lg text-foreground">{formatCurrency(creditTotal)}</span></p>}
           </div>
         </div>
       </div>

@@ -11,7 +11,7 @@ import { ProductPublicationFields } from "./product-publication-fields";
 
 export function ProductForm({ product: existing, categories }: { product?: AdminProduct; categories: CatalogCategory[] }) {
   const product = existing ?? {
-    name: "", brand: "", short_description: "", description: "", price: "", credit_price: "",
+    name: "", brand: "", short_description: "", description: "", price: "", credit_price: null,
     category_id: "", active: true, available: true, featured: false, best_seller: false, gift_section: false,
   };
   const [state, action, pending] = useActionState(existing ? saveProduct.bind(null, existing.id, existing.updated_at) : createProduct, {});

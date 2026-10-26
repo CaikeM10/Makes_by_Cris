@@ -3,13 +3,14 @@ import { storeConfig } from "@/lib/store-config";
 import { formatCurrency } from "@/lib/format";
 import type { CartItem, CheckoutData } from "@/lib/types";
 
-import { getCartTotal, getLineTotal } from "@/lib/pricing";
+import { canPayWithCredit, creditUnavailableMessage, getCartTotal, getLineTotal } from "@/lib/pricing";
 import { deliveryFeeLabel } from "@/lib/delivery";
 
 export function buildOrderMessage(
   items: CartItem[],
   data: CheckoutData,
 ) {
+  if (data.payment === "Cartão de crédito" && !canPayWithCredit(items)) throw new Error(creditUnavailableMessage);
   const lines: string[] = [];
 
   lines.push("Olá! Gostaria de realizar um pedido:");

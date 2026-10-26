@@ -17,7 +17,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { deliveryFeeLabel, deliveryNotice } from "@/lib/delivery";
 import { useStore } from "@/components/store-provider";
 import { formatCurrency, maskPhone } from "@/lib/format";
-import { getCartTotal, getLineTotal } from "@/lib/pricing";
+import { canPayWithCredit, creditUnavailableMessage, getCartTotal, getLineTotal } from "@/lib/pricing";
 import { storeConfig } from "@/lib/store-config";
 import type {
   CheckoutData,
@@ -54,11 +54,13 @@ export default function CheckoutPage() {
   const location = data.receivingMode === "delivery" ? getFulfillmentLocation(data.city) : undefined;
   const isDelivery = location?.type === "home-delivery";
 
-  const orderTotal = getCartTotal(items, data.payment);
+  const creditAvailable = canPayWithCredit(items);
+  const invalidCreditSelection = data.payment === "Cartão de crédito" && !creditAvailable;
+  const orderTotal = invalidCreditSelection ? null : getCartTotal(items, data.payment);
 
   const message = useMemo(
-    () => buildOrderMessage(items, data),
-    [items, data],
+    () => invalidCreditSelection ? null : buildOrderMessage(items, data),
+    [items, data, invalidCreditSelection],
   );
 
   const update = <K extends keyof CheckoutData>(
@@ -81,6 +83,7 @@ export default function CheckoutPage() {
 
   const validate = () => {
     const next = validateCheckout(data);
+    if (invalidCreditSelection) next.payment = creditUnavailableMessage;
 
     setErrors(next);
     return Object.keys(next).length === 0;
@@ -99,6 +102,7 @@ export default function CheckoutPage() {
       return;
     }
 
+    if (message === null) return;
     window.open(buildWhatsAppUrl(message), "_blank", "noopener,noreferrer");
     toast.success("Pedido enviado para o WhatsApp!", {
       description: "Conclua a conversa para confirmar pagamento e entrega.",
@@ -204,11 +208,12 @@ export default function CheckoutPage() {
                   htmlFor={`payment-${option}`}
                   className="flex cursor-pointer items-center gap-3 rounded-xl border border-border px-4 py-3.5 text-sm transition-colors has-[[data-state=checked]]:border-primary has-[[data-state=checked]]:bg-secondary"
                 >
-                  <RadioGroupItem id={`payment-${option}`} value={option} />
+                  <RadioGroupItem id={`payment-${option}`} value={option} disabled={option === "Cartão de crédito" && !creditAvailable} aria-describedby={option === "Cartão de crédito" && !creditAvailable ? "credit-unavailable" : undefined} />
                   {option}
                 </Label>
               ))}
             </RadioGroup>
+            {!creditAvailable && <p id="credit-unavailable" role="status" className="text-sm text-muted-foreground">{creditUnavailableMessage}{invalidCreditSelection ? " Selecione outra forma de pagamento." : ""}</p>}
           </fieldset>
 
           {/* Entrega */}
@@ -374,7 +379,7 @@ export default function CheckoutPage() {
                     )}
                   </span>
                   <span className="shrink-0 font-medium">
-                    {formatCurrency(getLineTotal(item, data.payment))}
+                    {invalidCreditSelection ? "Indisponível" : formatCurrency(getLineTotal(item, data.payment))}
                   </span>
                 </li>
               ))}
@@ -386,7 +391,7 @@ export default function CheckoutPage() {
                   Subtotal dos produtos
                 </span>
                 <span className="text-sm font-medium">
-                  {formatCurrency(orderTotal)}
+                  {orderTotal === null ? "Indisponível" : formatCurrency(orderTotal)}
                 </span>
               </div>
 
@@ -409,7 +414,7 @@ export default function CheckoutPage() {
                   Total
                 </span>
                 <span className="font-serif text-3xl text-primary">
-                  {formatCurrency(orderTotal)}
+                  {orderTotal === null ? "Indisponível" : formatCurrency(orderTotal)}
                 </span>
               </div>
 

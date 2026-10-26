@@ -60,9 +60,9 @@ export function ProductCard({ product }: { product: Product }) {
               à vista no PIX
             </span>
 
-            <span className="mt-1 text-[0.625rem] leading-tight text-muted-foreground">
+            {product.creditPrice !== null && <span className="mt-1 text-[0.625rem] leading-tight text-muted-foreground">
               {formatCurrency(product.creditPrice)} no crédito · até 6x
-            </span>
+            </span>}
           </div>
 
           <AddToBagButton product={product} variant="compact" />

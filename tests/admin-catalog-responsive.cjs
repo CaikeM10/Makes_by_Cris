@@ -12,7 +12,7 @@ function load(file) {
   if (cache[file]) return cache[file];
   const module = { exports: {} };
   const source = ts.transpileModule(fs.readFileSync(path.join(root, file), 'utf8'), { compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022, jsx: ts.JsxEmit.ReactJSX } }).outputText;
-  vm.runInNewContext(source, { module, exports: module.exports, URLSearchParams, require(name) {
+  vm.runInNewContext(source, { module, exports: module.exports, process: { env: {} }, URLSearchParams, require(name) {
     if (name === 'react') return { ...React, useActionState: () => [{}, () => {}, false] };
     if (name === 'react/jsx-runtime') return require(name);
     if (name === 'next/link') return { default: ({ children, href, ...props }) => React.createElement('a', { href, ...props }, children) };

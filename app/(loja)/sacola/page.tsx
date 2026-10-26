@@ -4,14 +4,14 @@ import Link from 'next/link'
 import { ArrowRight, Minus, Plus, ShoppingBag, Trash2 } from 'lucide-react'
 import { LinkButton } from '@/components/link-button'
 import { useStore } from '@/components/store-provider'
-import { getCartTotal, getLineTotal } from '@/lib/pricing'
+import { canPayWithCredit, getCartTotal, getLineTotal } from '@/lib/pricing'
 import { formatCurrency } from '@/lib/format'
 import { deliveryNotice } from '@/lib/delivery'
 
 export default function SacolaPage() {
   const { items, subtotal, bagCount, updateQuantity, removeItem, clearBag } = useStore()
 
-  const creditTotal = getCartTotal(items, 'Cartão de crédito')
+  const creditTotal = canPayWithCredit(items) ? getCartTotal(items, 'Cartão de crédito') : null
 
   if (items.length === 0) {
     return (
@@ -142,10 +142,10 @@ export default function SacolaPage() {
                 <dt className="text-secondary-foreground/75">Subtotal no PIX, débito ou dinheiro</dt>
                 <dd className="shrink-0 font-medium">{formatCurrency(subtotal)}</dd>
               </div>
-              <div className="flex items-center justify-between gap-4">
+              {creditTotal !== null && <div className="flex items-center justify-between gap-4">
                 <dt className="text-secondary-foreground/75">Total no crédito</dt>
                 <dd className="shrink-0 font-medium">{formatCurrency(creditTotal)}</dd>
-              </div>
+              </div>}
               <div className="flex items-center justify-between gap-4">
                 <dt className="text-secondary-foreground/75">Entrega</dt>
                 <dd className="text-secondary-foreground/75">

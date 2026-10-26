@@ -18,7 +18,7 @@ export type Product = {
   price: number;
 
   /** Preço para pagamento no cartão de crédito */
-  creditPrice: number;
+  creditPrice: number | null;
 
   image: string;
 
