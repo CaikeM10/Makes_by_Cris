@@ -245,6 +245,14 @@ test('formulário compartilhado renderiza cadastro e edição com seleção de i
   assert.match(created, /Cadastrar produto/); assert.match(created, /Escolher foto/);
   for (const name of [...Object.keys(valid), 'image']) assert.ok(created.includes(`name="${name}"`), name);
   assert.match(created, /accept="image\/jpeg,image\/png,image\/webp"/);
+  assert.match(created.match(/<input[^>]*name="name"[^>]*>/)[0], /required=""/);
+  for (const name of ['brand', 'short_description', 'description']) {
+    assert.doesNotMatch(created.match(new RegExp(`<(?:input|textarea)[^>]*name="${name}"[^>]*>`))[0], /required=/);
+  }
   const edited = renderToString(React.createElement(ProductForm, { categories, product: { ...valid, image: '/products/legacy.webp', id: 'p-01', updated_at: version } }));
   assert.match(edited, /Alterar foto/); assert.match(edited, /Salvar alterações/); assert.match(edited, /src="\/products\/legacy.webp"/);
+  const unknown = renderToString(React.createElement(ProductForm, { categories: [{ ...categories[0], active: false }], product: { ...valid, brand: null, short_description: null, description: null, active: false, id: 'reserved-id', updated_at: version } }));
+  assert.match(unknown.replace(/<!--.*?-->/g, ''), /Maquiagem \(inativa\)/);
+  assert.match(unknown.match(/<input[^>]*name="brand"[^>]*>/)[0], /value=""/);
+  assert.doesNotMatch(unknown.replace(/<script>[\s\S]*?<\/script>/g, ''), /null|undefined/);
 });

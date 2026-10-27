@@ -19,7 +19,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
   return {
     title: product.name,
-    description: product.shortDescription,
+    description: product.shortDescription ?? undefined,
     openGraph: { images: [product.image] },
   }
 }
@@ -75,13 +75,13 @@ export default async function ProdutoPage({ params }: PageProps) {
 
           <div className="flex flex-col gap-7">
             <div className="flex flex-col gap-3">
-              <p className="eyebrow text-primary">{product.brand}</p>
+              {product.brand && <p className="eyebrow text-primary">{product.brand}</p>}
               <h1 className="font-serif text-3xl leading-tight text-balance lg:text-4xl">
                 {product.name}
               </h1>
-              <p className="text-sm leading-relaxed text-muted-foreground">
+              {product.shortDescription && <p className="text-sm leading-relaxed text-muted-foreground">
                 {product.shortDescription}
-              </p>
+              </p>}
               <div className="flex flex-col gap-1">
                 <p className="font-serif text-4xl text-primary">{formatCurrency(product.price)}</p>
                 <p className="text-xs text-muted-foreground">no PIX, débito ou dinheiro</p>
@@ -91,10 +91,10 @@ export default async function ProdutoPage({ params }: PageProps) {
 
             <ProductPurchase product={product} />
 
-            <div className="flex flex-col gap-3 border-t border-border pt-7">
+            {product.description && <div className="flex flex-col gap-3 border-t border-border pt-7">
               <h2 className="eyebrow text-muted-foreground">Sobre o produto</h2>
               <p className="text-sm leading-relaxed text-foreground/85">{product.description}</p>
-            </div>
+            </div>}
           </div>
         </div>
       </div>

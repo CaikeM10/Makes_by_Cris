@@ -1,10 +1,10 @@
 import type { CatalogFilters, ProductPatch } from "./repository";
 
 export const productFields = {
-  name: { label: "Nome do produto", max: 200 },
-  brand: { label: "Marca", max: 120 },
-  short_description: { label: "Descrição curta", max: 500 },
-  description: { label: "Descrição completa", max: 10000 },
+  name: { label: "Nome do produto", max: 200, required: true },
+  brand: { label: "Marca (opcional)", max: 120, required: false },
+  short_description: { label: "Descrição curta (opcional)", max: 500, required: false },
+  description: { label: "Descrição completa (opcional)", max: 10000, required: false },
 } as const;
 export const publicationFields = { active: "Ativo", available: "Disponível", featured: "Destaques", best_seller: "Mais vendidos", gift_section: "Presentes & Kits" } as const;
 export function parseMoney(value: unknown): string | null {
@@ -16,8 +16,8 @@ export function validateProduct(input: Record<string, unknown>): { data?: Produc
   const data: Record<string, unknown> = {};
   for (const [key, spec] of Object.entries(productFields)) {
     const value = typeof input[key] === "string" ? input[key].trim() : "";
-    if (!value || value.length > spec.max) errors[key] = `${spec.label}: informe de 1 a ${spec.max} caracteres.`;
-    data[key] = value;
+    if ((key === "name" && !value) || value.length > spec.max || (input[key] != null && typeof input[key] !== "string")) errors[key] = `${spec.label}: informe de 1 a ${spec.max} caracteres.`;
+    data[key] = key !== "name" && !value ? null : value;
   }
   for (const key of ["price", "credit_price"]) {
     if (key === "credit_price" && (input[key] === null || input[key] === undefined || (typeof input[key] === "string" && input[key].trim() === ""))) {

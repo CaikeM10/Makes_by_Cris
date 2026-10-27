@@ -172,3 +172,41 @@ test('catálogo, busca e resolução de favoritos mantêm produto com crédito n
 test('migration contém exclusivamente DROP NOT NULL de credit_price', () => {
   assert.equal(fs.readFileSync(path.join(root, 'supabase/migrations/202610250001_optional_credit_price.sql'), 'utf8').trim(), 'alter table public.products\nalter column credit_price drop not null;');
 });
+
+test('conteúdo desconhecido permanece null no Admin e nos mappers, sem perder limites', () => {
+  for (const value of [null, undefined, '', '  ']) {
+    const result = validateProduct({ ...valid, brand: value, short_description: value, description: value });
+    assert.ok(result.data);
+    for (const key of ['brand', 'short_description', 'description']) assert.equal(result.data[key], null);
+  }
+  for (const [key, max] of [['brand',120],['short_description',500],['description',10000]]) {
+    assert.ok(validateProduct({ ...valid, [key]: 'a'.repeat(max + 1) }).errors[key]);
+    assert.ok(validateProduct({ ...valid, [key]: 123 }).errors[key]);
+  }
+  const empty = { ...row, brand: null, short_description: null, description: null };
+  assert.equal(mapper.mapProduct(empty).brand, null);
+  const mapped = mapper.mapPublicProduct(empty, category);
+  assert.equal(mapped.shortDescription, null);
+  assert.equal(mapped.description, null);
+  const catalog = load('lib/catalog/public-catalog.ts').selectPublicCatalog({ categories: [category], products: [mapped] });
+  assert.equal(catalog.searchProducts('Produto').length, 1);
+  assert.equal(catalog.searchProducts('null').length, 0);
+  assert.equal(catalog.searchProducts('undefined').length, 0);
+});
+
+test('loja omite blocos de marca e descrições ausentes e mantém compra', async () => {
+  const empty = { ...product, brand: null, shortDescription: null, description: null };
+  const Card = load('components/product-card.tsx', uiMocks).ProductCard;
+  const card = render(React.createElement(Card, { product: empty }));
+  assert.doesNotMatch(card, /eyebrow|line-clamp-2|null|undefined/);
+  assert.match(card, /Adicionar à sacola/);
+  const Page = load('app/(loja)/produto/[slug]/page.tsx', { ...uiMocks,
+    'next/navigation': { notFound() { throw Error('Produto deveria existir'); } },
+    '@/components/product-grid': { ProductGrid: () => null },
+    '@/components/section-heading': { SectionHeading: () => null },
+    '@/lib/catalog/public-server': { getPublicCatalog: async () => ({ getProductBySlug: () => empty, getCategoryName: () => 'Perfumes', getProductsByCategory: () => [] }) },
+  });
+  const html = render(await Page.default({ params: Promise.resolve({ slug: product.slug }) }));
+  assert.doesNotMatch(html, /Sobre o produto|null|undefined/);
+  assert.equal((await Page.generateMetadata({ params: Promise.resolve({ slug: product.slug }) })).description, undefined);
+});

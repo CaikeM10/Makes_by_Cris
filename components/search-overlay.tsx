@@ -211,9 +211,9 @@ export function SearchOverlay({ open, onOpenChange }: SearchOverlayProps) {
                           <span className="truncate text-sm leading-snug font-medium">
                             <HighlightedName name={product.name} term={deferredQuery} />
                           </span>
-                          <span className="truncate text-xs text-muted-foreground">
+                          {product.shortDescription && <span className="truncate text-xs text-muted-foreground">
                             {product.shortDescription}
-                          </span>
+                          </span>}
                           <span className="flex items-center gap-1.5 text-[0.7rem] text-muted-foreground">
                             <span className="tracking-[0.1em] uppercase">
                               {getCategoryName(product.category)}

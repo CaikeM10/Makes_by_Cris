@@ -37,7 +37,7 @@ export function selectPublicCatalog(snapshot: PublicCatalog) {
           category: normalizeText(`${getCategoryName(product.category)} ${product.category}`),
           brand: normalizeText(product.brand),
           short: normalizeText(product.shortDescription),
-          extra: normalizeText(`${product.description} ${product.keywords.join(" ")}`),
+          extra: normalizeText(`${product.description ?? ""} ${product.keywords.join(" ")}`),
         };
         let score = 0;
         for (const word of term.split(/\s+/)) {

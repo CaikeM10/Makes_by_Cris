@@ -28,7 +28,7 @@ export function ProductBrowser({ products }: { products: Product[] }) {
   const [onlyAvailable, setOnlyAvailable] = useState(false)
 
   const brands = useMemo(
-    () => Array.from(new Set(products.map((product) => product.brand))).sort(),
+    () => Array.from(new Set(products.map((product) => product.brand).filter((value): value is string => Boolean(value)))).sort(),
     [products],
   )
   const [brand, setBrand] = useState<string>('todas')
@@ -43,7 +43,7 @@ export function ProductBrowser({ products }: { products: Product[] }) {
       const words = term.split(/\s+/)
       list = list.filter((product) => {
         const haystack = normalizeText(
-          `${product.name} ${product.brand} ${product.shortDescription} ${product.keywords.join(' ')}`,
+          `${product.name} ${product.brand ?? ''} ${product.shortDescription ?? ''} ${product.keywords.join(' ')}`,
         )
         return words.every((word) => haystack.includes(word))
       })

@@ -35,7 +35,7 @@ export function ProductCard({ product }: { product: Product }) {
       </div>
 
       <div className="flex flex-1 flex-col gap-1 pt-3.5">
-        <p className="eyebrow text-muted-foreground">{product.brand}</p>
+        {product.brand && <p className="eyebrow text-muted-foreground">{product.brand}</p>}
 
         <h3 className="text-sm leading-snug font-medium text-pretty">
           <Link
@@ -46,9 +46,9 @@ export function ProductCard({ product }: { product: Product }) {
           </Link>
         </h3>
 
-        <p className="line-clamp-2 text-xs leading-relaxed text-muted-foreground">
+        {product.shortDescription && <p className="line-clamp-2 text-xs leading-relaxed text-muted-foreground">
           {product.shortDescription}
-        </p>
+        </p>}
 
         <div className="mt-auto flex items-end justify-between gap-2 pt-3">
           <div className="flex flex-col">

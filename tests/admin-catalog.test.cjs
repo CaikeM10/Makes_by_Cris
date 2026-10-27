@@ -24,7 +24,7 @@ test('validação central aceita preços independentes e rejeita valores ambígu
   for (const price of ['-1', '1.234,50', '1e2', 'Infinity', 'NaN', '', '2.999', '10000000000']) assert.equal(validation.validateProduct({ ...valid, price }).data, undefined);
 });
 test('validação rejeita campos vazios, longos, categoria e flags inválidas', () => {
-  for (const patch of [{ name: ' ' }, { brand: 'a'.repeat(121) }, { category_id: '' }, { active: 'true' }, { description: '' }]) assert.equal(validation.validateProduct({ ...valid, ...patch }).data, undefined);
+  for (const patch of [{ name: ' ' }, { brand: 'a'.repeat(121) }, { category_id: '' }, { active: 'true' }, { description: 123 }]) assert.equal(validation.validateProduct({ ...valid, ...patch }).data, undefined);
 });
 test('patch permite somente campos editáveis, preserva slug, imagem, datas e metadados', () => {
   const result = validation.validateProduct({ ...valid, slug: 'evil', image: 'changed', created_at: 'today', keywords: [], catalog_order: 99 });

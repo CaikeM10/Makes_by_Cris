@@ -77,7 +77,7 @@ export default function SacolaPage() {
                 <div className="flex flex-1 flex-col gap-2">
                   <div className="flex items-start justify-between gap-3">
                     <div className="flex flex-col gap-0.5">
-                      <p className="eyebrow text-muted-foreground">{item.product.brand}</p>
+                      {item.product.brand && <p className="eyebrow text-muted-foreground">{item.product.brand}</p>}
                       <h2 className="text-sm leading-snug font-medium text-pretty">
                         <Link href={`/produto/${item.product.slug}`} className="hover:text-primary">
                           {item.product.name}

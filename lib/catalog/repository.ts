@@ -1,8 +1,8 @@
 export type CatalogCategory = { id: string; name: string; slug: string; active: boolean };
 export type ProductRow = {
-  id: string; name: string; slug: string; short_description: string; description: string;
+  id: string; name: string; slug: string; short_description: string | null; description: string | null;
   price: string | number; credit_price: string | number | null; image: string; category_id: string;
-  brand: string; keywords: string[]; variations: string[] | null;
+  brand: string | null; keywords: string[]; variations: string[] | null;
   featured: boolean; best_seller: boolean; gift_section: boolean; available: boolean; active: boolean;
   catalog_order: number; created_at: string; updated_at: string;
 };
