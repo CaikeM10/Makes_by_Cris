@@ -27,8 +27,8 @@ const message = overrides => buildOrderMessage(items, { ...data, ...overrides })
 test('retirada não exige cidade nem endereço e identifica sede sem endereço residencial', () => {
   assert.equal(Object.keys(errors({})).length, 0);
   const text = message({ city: 'Poranga - CE', street: 'Rua oculta', district: 'Bairro oculto', number: '123' });
-  assert.match(text, /Forma de recebimento:\* Retirada na loja/);
-  assert.match(text, /Local:\* Makes by Cris Martins — Poranga - CE/);
+  assert.match(text, /Forma de recebimento:\*\nRetirada na loja/);
+  assert.match(text, /Local:\*\nMakes by Cris Martins — Poranga - CE/);
   assert.doesNotMatch(text, /Rua oculta|Bairro oculto|123|Cidade:|CEP/);
 });
 test('entrega exige cidade atendida', () => {
@@ -43,12 +43,12 @@ test('Poranga exige especificamente Rua e Bairro com mensagens próprias', () =>
 test('opcionais vazios são omitidos e preenchidos são incluídos; CEP ausente', () => {
   const delivery = { receivingMode: 'delivery', city: 'Poranga - CE', street: 'Principal', district: 'Centro' };
   const text = message(delivery);
-  assert.match(text, /Forma de recebimento:\* Entrega/);
-  assert.match(text, /Cidade:\* Poranga - CE/);
-  assert.match(text, /Rua:\* Principal/); assert.match(text, /Bairro:\* Centro/);
+  assert.match(text, /Forma de recebimento:\*\nEntrega/);
+  assert.match(text, /Cidade: Poranga - CE/);
+  assert.match(text, /Rua: Principal/); assert.match(text, /Bairro: Centro/);
   assert.doesNotMatch(text, /Número|Complemento|referência|CEP/);
   const full = message({ ...delivery, number: '12', complement: 'Casa', landmark: 'Praça' });
-  for (const value of ['Número:* 12', 'Complemento:* Casa', 'Ponto de referência:* Praça']) assert.ok(full.includes(value));
+  for (const value of ['Número: 12', 'Complemento: Casa', 'Ponto de referência: Praça']) assert.ok(full.includes(value));
   assert.doesNotMatch(message({ ...delivery, number: ' ', complement: ' ', landmark: ' ' }), /Número|Complemento|referência/);
 });
 test('Entrega → Retirada ignora erros ocultos e mantém dados para voltar', () => {
