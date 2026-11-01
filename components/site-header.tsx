@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Heart, Search, ShoppingBag } from "lucide-react";
@@ -19,6 +19,7 @@ export function SiteHeader() {
   const pathname = usePathname();
   const { bagCount, favorites, lastAdded } = useStore();
   const [searchOpen, setSearchOpen] = useState(false);
+  const searchButtonRef = useRef<HTMLButtonElement>(null);
   const [pulse, setPulse] = useState(false);
 
   useEffect(() => {
@@ -67,6 +68,7 @@ export function SiteHeader() {
 
           <div className="flex items-center gap-1">
             <button
+              ref={searchButtonRef}
               type="button"
               onClick={() => setSearchOpen(true)}
               aria-label="Buscar produtos"
@@ -108,7 +110,7 @@ export function SiteHeader() {
         </div>
       </header>
 
-      <SearchOverlay open={searchOpen} onOpenChange={setSearchOpen} />
+      <SearchOverlay open={searchOpen} onOpenChange={setSearchOpen} returnFocus={searchButtonRef} />
     </>
   );
 }

@@ -1,10 +1,11 @@
 import Link from 'next/link'
 import { ArrowUpRight } from 'lucide-react'
-import type { Category } from '@/lib/types'
+import type { HomeCategory } from '@/lib/catalog/home-catalog'
+import { SafeImage } from '@/components/safe-image'
 import { cn } from '@/lib/utils'
 
 type CategoryCardProps = {
-  category: Category
+  category: HomeCategory
   count?: number
   className?: string
 }
@@ -18,8 +19,9 @@ export function CategoryCard({ category, count, className }: CategoryCardProps) 
         className,
       )}
     >
-      <img
+      <SafeImage
         src={category.image || '/placeholder.svg'}
+        fallbackSources={category.imageFallbacks}
         alt=""
         className="absolute inset-0 size-full object-cover transition-transform duration-700 group-hover:scale-105"
       />
