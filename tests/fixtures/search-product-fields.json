@@ -1,0 +1,623 @@
+{
+  "05a8c8aa-9b37-4616-a2f1-af326bb48d08": {
+    "slug": "kit-floratta-red-embalagem-lata",
+    "brand": null,
+    "shortDescription": null,
+    "description": null,
+    "keywords": [],
+    "price": 158,
+    "creditPrice": 175
+  },
+  "06f41e88-38e5-4407-8503-73d394827d0f": {
+    "slug": "kit-arbo-tradicional",
+    "brand": null,
+    "shortDescription": null,
+    "description": null,
+    "keywords": [],
+    "price": 148,
+    "creditPrice": 165
+  },
+  "0841c8ce-c87b-4c71-a3c8-312ed4cffe11": {
+    "slug": "kit-eico-cachos-definidos",
+    "brand": "Eico",
+    "shortDescription": null,
+    "description": null,
+    "keywords": [],
+    "price": 55,
+    "creditPrice": 61
+  },
+  "0ee078d9-23dd-41a0-86ab-b04285c1e7d8": {
+    "slug": "lily-creme-acetinado",
+    "brand": null,
+    "shortDescription": null,
+    "description": null,
+    "keywords": [],
+    "price": 104,
+    "creditPrice": 115.9
+  },
+  "186a1609-e711-47ad-968d-dcdb67d4642c": {
+    "slug": "coffee-woman-duo",
+    "brand": null,
+    "shortDescription": null,
+    "description": null,
+    "keywords": [],
+    "price": 140,
+    "creditPrice": 156
+  },
+  "227ba16e-4dbc-4362-9592-0aa12c642dec": {
+    "slug": "malbec-gold",
+    "brand": null,
+    "shortDescription": null,
+    "description": null,
+    "keywords": [],
+    "price": 175,
+    "creditPrice": 194.5
+  },
+  "2426b051-0e0a-408e-b1f2-8b7dd590f836": {
+    "slug": "luna-tradicional",
+    "brand": null,
+    "shortDescription": null,
+    "description": null,
+    "keywords": [],
+    "price": 79.9,
+    "creditPrice": 88.9
+  },
+  "27ee0da6-54fd-47be-ac15-430ba5878b35": {
+    "slug": "ilia-secreto",
+    "brand": null,
+    "shortDescription": null,
+    "description": null,
+    "keywords": [],
+    "price": 100,
+    "creditPrice": 112
+  },
+  "2c38f0ea-ea90-44fc-a5f9-621d3eb9ab7f": {
+    "slug": "floratta-red",
+    "brand": null,
+    "shortDescription": null,
+    "description": null,
+    "keywords": [],
+    "price": 104,
+    "creditPrice": 115.9
+  },
+  "3574bce3-3873-4782-97df-0b8e54f6aef1": {
+    "slug": "malbec",
+    "brand": null,
+    "shortDescription": null,
+    "description": null,
+    "keywords": [],
+    "price": 162,
+    "creditPrice": 180
+  },
+  "38157865-327d-4b51-8b4d-769620296405": {
+    "slug": "kriska-drama",
+    "brand": null,
+    "shortDescription": null,
+    "description": null,
+    "keywords": [],
+    "price": 79.9,
+    "creditPrice": 88.9
+  },
+  "42aa4b7f-6733-49bb-92ab-8660620e7ee0": {
+    "slug": "una-blush",
+    "brand": null,
+    "shortDescription": null,
+    "description": null,
+    "keywords": [],
+    "price": 165,
+    "creditPrice": 184.5
+  },
+  "42e874ea-7472-452e-a8de-acdd2c40a918": {
+    "slug": "colonia-infantil-ciclo-cici-bela-12",
+    "brand": null,
+    "shortDescription": null,
+    "description": null,
+    "keywords": [],
+    "price": 65,
+    "creditPrice": 72
+  },
+  "43d20ee7-d439-4882-8c97-bca8406f4bf5": {
+    "slug": "kits-eico-todos-ganham-a-mascara-de-brinde",
+    "brand": null,
+    "shortDescription": null,
+    "description": null,
+    "keywords": [],
+    "price": 55,
+    "creditPrice": 61
+  },
+  "45d6668a-d450-46be-a18d-1d02ddd08777": {
+    "slug": "kit-portinari",
+    "brand": null,
+    "shortDescription": null,
+    "description": null,
+    "keywords": [],
+    "price": 165,
+    "creditPrice": 183
+  },
+  "478b60e0-586e-472d-a435-76079f851e3b": {
+    "slug": "kit-egeo-choc",
+    "brand": null,
+    "shortDescription": null,
+    "description": null,
+    "keywords": [],
+    "price": 150,
+    "creditPrice": 167
+  },
+  "4aa4ea65-8554-4c7f-b02e-6cb93ca07ee6": {
+    "slug": "acqua-fresca",
+    "brand": null,
+    "shortDescription": null,
+    "description": null,
+    "keywords": [],
+    "price": 85,
+    "creditPrice": 94
+  },
+  "4c3a01bc-50f4-418f-a98a-52758ed67274": {
+    "slug": "ilia-lacos",
+    "brand": null,
+    "shortDescription": null,
+    "description": null,
+    "keywords": [],
+    "price": 95,
+    "creditPrice": 105.9
+  },
+  "50c587b0-d7a4-4be5-80e5-6f939b0bdeef": {
+    "slug": "kissme-cabernet",
+    "brand": null,
+    "shortDescription": null,
+    "description": null,
+    "keywords": [],
+    "price": 60,
+    "creditPrice": 67
+  },
+  "52b4b7c8-bec7-4713-b8fe-ae977d7c45ad": {
+    "slug": "kit-floratta-red-passion-nativa-spa",
+    "brand": null,
+    "shortDescription": null,
+    "description": null,
+    "keywords": [],
+    "price": 197,
+    "creditPrice": 218
+  },
+  "66c3122a-f2e4-44f3-b874-6efceadbb584": {
+    "slug": "deleite-400ml",
+    "brand": null,
+    "shortDescription": null,
+    "description": null,
+    "keywords": [],
+    "price": 40,
+    "creditPrice": 44.5
+  },
+  "67b8b97e-a23f-4fc8-bea7-9f6d0aaaed9c": {
+    "slug": "eudora-imensi-infinite",
+    "brand": "Eudora",
+    "shortDescription": null,
+    "description": null,
+    "keywords": [],
+    "price": 75,
+    "creditPrice": 83.9
+  },
+  "6e1828c2-286e-4c22-b62b-02a9c1e6162a": {
+    "slug": "kit-egeo-dulce",
+    "brand": null,
+    "shortDescription": null,
+    "description": null,
+    "keywords": [],
+    "price": 123,
+    "creditPrice": 137
+  },
+  "702f16ae-10ba-424e-8c39-2764a2ae2273": {
+    "slug": "lily-eau-de-parfum",
+    "brand": null,
+    "shortDescription": null,
+    "description": null,
+    "keywords": [],
+    "price": 226,
+    "creditPrice": 250.9
+  },
+  "776457e8-aa64-4e4f-8e40-86966679ca33": {
+    "slug": "kaiak-tradicional",
+    "brand": null,
+    "shortDescription": null,
+    "description": null,
+    "keywords": [],
+    "price": 85,
+    "creditPrice": null
+  },
+  "7fee09a8-2dd4-46c4-84cf-9be9d3f5f901": {
+    "slug": "kit-floratta-red-body-spray-hidratante-corporal",
+    "brand": null,
+    "shortDescription": null,
+    "description": null,
+    "keywords": [],
+    "price": 58,
+    "creditPrice": 65
+  },
+  "8096ff51-b862-41d8-986e-b392572f4080": {
+    "slug": "humor-proprio",
+    "brand": null,
+    "shortDescription": null,
+    "description": null,
+    "keywords": [],
+    "price": 69.9,
+    "creditPrice": 77.9
+  },
+  "879dfd16-106f-47d7-b920-1a4bd282d4e2": {
+    "slug": "elysee",
+    "brand": null,
+    "shortDescription": null,
+    "description": null,
+    "keywords": [],
+    "price": 226,
+    "creditPrice": 250.9
+  },
+  "87ba69c7-140c-4774-ac3f-e9396a6f0f19": {
+    "slug": "kiss-you-more-100ml",
+    "brand": null,
+    "shortDescription": null,
+    "description": null,
+    "keywords": [],
+    "price": 83,
+    "creditPrice": 92
+  },
+  "8b877369-70d7-436c-a13e-131de69524df": {
+    "slug": "linda-tradicional-100ml",
+    "brand": null,
+    "shortDescription": null,
+    "description": null,
+    "keywords": [],
+    "price": 155,
+    "creditPrice": 172
+  },
+  "8d5c4104-85f8-4f8e-a26c-22b0d90d96e7": {
+    "slug": "essencial-tradicional",
+    "brand": null,
+    "shortDescription": null,
+    "description": null,
+    "keywords": [],
+    "price": 126,
+    "creditPrice": 140
+  },
+  "8db96c83-9d31-4c8b-a0a4-b36592e2ba3e": {
+    "slug": "coffee-woman-seduction",
+    "brand": null,
+    "shortDescription": null,
+    "description": null,
+    "keywords": [],
+    "price": 140,
+    "creditPrice": 156
+  },
+  "8ee5429f-4cab-4cba-8273-cb3f2577d66e": {
+    "slug": "body-splash-kaiak-tradicional-200ml",
+    "brand": null,
+    "shortDescription": null,
+    "description": null,
+    "keywords": [],
+    "price": 45,
+    "creditPrice": 50
+  },
+  "922a7c81-7874-4756-a4be-69590c77f700": {
+    "slug": "kit-morando-irresistivel",
+    "brand": null,
+    "shortDescription": null,
+    "description": null,
+    "keywords": [],
+    "price": 36,
+    "creditPrice": 40
+  },
+  "92e0c220-924a-4ead-ad9e-66c65d41aedf": {
+    "slug": "colonia-infantil-ciclo-mini-3",
+    "brand": null,
+    "shortDescription": null,
+    "description": null,
+    "keywords": [],
+    "price": 65,
+    "creditPrice": 72
+  },
+  "95aea40e-ba2f-473e-9313-09b0015ad75d": {
+    "slug": "coffee-addictive",
+    "brand": null,
+    "shortDescription": null,
+    "description": null,
+    "keywords": [],
+    "price": 120,
+    "creditPrice": 133.9
+  },
+  "97808f55-6287-464b-a72a-276c1d12426c": {
+    "slug": "kit-deleite",
+    "brand": null,
+    "shortDescription": null,
+    "description": null,
+    "keywords": [],
+    "price": 110,
+    "creditPrice": 122.9
+  },
+  "97e5f276-8410-42e5-84b8-6e0ba84016f6": {
+    "slug": "orquidea-noire",
+    "brand": null,
+    "shortDescription": null,
+    "description": null,
+    "keywords": [],
+    "price": 59.9,
+    "creditPrice": null
+  },
+  "9b3d40bf-6625-40f1-98e4-94ff1bb1d8b0": {
+    "slug": "kit-celebre-sua-forca",
+    "brand": null,
+    "shortDescription": null,
+    "description": null,
+    "keywords": [],
+    "price": 88,
+    "creditPrice": null
+  },
+  "9be9aa42-ccbf-4711-87a6-4af6ba00413c": {
+    "slug": "body-splash-infantil-cici-bela-150ml",
+    "brand": null,
+    "shortDescription": null,
+    "description": null,
+    "keywords": [],
+    "price": 39,
+    "creditPrice": 43.5
+  },
+  "a31a7d4b-6782-4061-b69f-58de7bfb06cf": {
+    "slug": "kit-coffee-seduction-colonia-hidratante",
+    "brand": null,
+    "shortDescription": null,
+    "description": null,
+    "keywords": [],
+    "price": 181,
+    "creditPrice": 201
+  },
+  "ab1cf089-9b05-4514-9f96-8233642f7b86": {
+    "slug": "hidratante-kiss",
+    "brand": null,
+    "shortDescription": null,
+    "description": null,
+    "keywords": [],
+    "price": 36,
+    "creditPrice": 40
+  },
+  "ac0c4ffd-efdb-429c-a729-a9845d9982af": {
+    "slug": "kit-hidratante-eudora",
+    "brand": "Eudora",
+    "shortDescription": null,
+    "description": null,
+    "keywords": [],
+    "price": 44.9,
+    "creditPrice": 49.9
+  },
+  "ad589a22-4bea-4de4-9564-fb9092effed7": {
+    "slug": "kit-lily-tradicional-oleo-hidratante-acetinado",
+    "brand": null,
+    "shortDescription": null,
+    "description": null,
+    "keywords": [],
+    "price": 235,
+    "creditPrice": 262
+  },
+  "b30275af-16bc-4403-b959-0760614b20f8": {
+    "slug": "meu-primeiro-humor",
+    "brand": null,
+    "shortDescription": null,
+    "description": null,
+    "keywords": [],
+    "price": 69.9,
+    "creditPrice": 77.9
+  },
+  "baf7ea0c-852b-49f0-8671-e204f0782646": {
+    "slug": "free",
+    "brand": null,
+    "shortDescription": null,
+    "description": null,
+    "keywords": [],
+    "price": 87,
+    "creditPrice": 96
+  },
+  "bd86cd7d-630c-4a3d-adcb-c443bf7dd516": {
+    "slug": "liz",
+    "brand": null,
+    "shortDescription": null,
+    "description": null,
+    "keywords": [],
+    "price": 110,
+    "creditPrice": 122.5
+  },
+  "c1016505-5fa7-4d91-9338-1fe95d7c514a": {
+    "slug": "ameixa-negra",
+    "brand": null,
+    "shortDescription": null,
+    "description": null,
+    "keywords": [],
+    "price": 59.9,
+    "creditPrice": null
+  },
+  "c9fb50bf-90f2-4173-bb14-31763f26da83": {
+    "slug": "homem-sagaz",
+    "brand": null,
+    "shortDescription": null,
+    "description": null,
+    "keywords": [],
+    "price": 120,
+    "creditPrice": 133.9
+  },
+  "cba378f9-2a30-4824-915d-ad82586200de": {
+    "slug": "hello-hello-100ml",
+    "brand": null,
+    "shortDescription": null,
+    "description": null,
+    "keywords": [],
+    "price": 85,
+    "creditPrice": 94
+  },
+  "cbe11a34-df2c-49f7-983b-9a6885808469": {
+    "slug": "essencial-exclusivo",
+    "brand": null,
+    "shortDescription": null,
+    "description": null,
+    "keywords": [],
+    "price": 126,
+    "creditPrice": 140
+  },
+  "ce098789-bb7e-42db-aae3-9f26742d7736": {
+    "slug": "zaad-tradicional",
+    "brand": null,
+    "shortDescription": null,
+    "description": null,
+    "keywords": [],
+    "price": 271,
+    "creditPrice": 301
+  },
+  "d069e56e-7569-438a-bb7a-ca3003288350": {
+    "slug": "essencial-oud",
+    "brand": null,
+    "shortDescription": null,
+    "description": null,
+    "keywords": [],
+    "price": 140,
+    "creditPrice": 144.9
+  },
+  "d43c6435-dbfb-4414-9e73-806860e0b3e2": {
+    "slug": "kit-kissme-cabernet",
+    "brand": null,
+    "shortDescription": null,
+    "description": null,
+    "keywords": [],
+    "price": 85,
+    "creditPrice": 94.9
+  },
+  "d7481843-2df1-42bb-99a3-3b1b846d2f40": {
+    "slug": "kit-elysee-parfum-hidratante",
+    "brand": null,
+    "shortDescription": null,
+    "description": null,
+    "keywords": [],
+    "price": 295,
+    "creditPrice": 327
+  },
+  "d7d4cfda-271b-48d0-97db-6aad86a97487": {
+    "slug": "colonia-infantil-cici-zoe-12",
+    "brand": null,
+    "shortDescription": null,
+    "description": null,
+    "keywords": [],
+    "price": 65,
+    "creditPrice": 72
+  },
+  "df1879db-6c03-4f19-be3c-b75bba255ae7": {
+    "slug": "natura-ekos-maracuja",
+    "brand": "Natura",
+    "shortDescription": null,
+    "description": null,
+    "keywords": [],
+    "price": 61,
+    "creditPrice": null
+  },
+  "e4385841-e5f9-42d6-8f10-9eddd6704671": {
+    "slug": "kit-clash-colonia-hidratante-facial",
+    "brand": null,
+    "shortDescription": null,
+    "description": null,
+    "keywords": [],
+    "price": 141.9,
+    "creditPrice": 157.9
+  },
+  "e43e1e22-d1fe-4aa8-83f1-158fd1b4bae9": {
+    "slug": "la-victorie-intense",
+    "brand": null,
+    "shortDescription": null,
+    "description": null,
+    "keywords": [],
+    "price": 160,
+    "creditPrice": 177.9
+  },
+  "e52239df-22df-4a12-a49f-031b5977c17b": {
+    "slug": "body-splash-kiss",
+    "brand": null,
+    "shortDescription": null,
+    "description": null,
+    "keywords": [],
+    "price": 40,
+    "creditPrice": 44.9
+  },
+  "e9a9aecd-dff5-4535-9499-ef21d1cb2389": {
+    "slug": "una-brilho",
+    "brand": null,
+    "shortDescription": null,
+    "description": null,
+    "keywords": [],
+    "price": 165.9,
+    "creditPrice": 184.5
+  },
+  "ec9b690c-79b6-4bad-a787-0cccbc1e73f2": {
+    "slug": "egeo-choc-90ml",
+    "brand": null,
+    "shortDescription": null,
+    "description": null,
+    "keywords": [],
+    "price": 124,
+    "creditPrice": null
+  },
+  "ee6b1e22-1c5d-4640-b34b-74996ba80580": {
+    "slug": "kit-ameixa",
+    "brand": null,
+    "shortDescription": null,
+    "description": null,
+    "keywords": [],
+    "price": 94.5,
+    "creditPrice": null
+  },
+  "ef3df2cb-8635-4944-b632-109d5edf24ee": {
+    "slug": "kiss-100ml",
+    "brand": null,
+    "shortDescription": null,
+    "description": null,
+    "keywords": [],
+    "price": 85,
+    "creditPrice": 94
+  },
+  "f36ef17f-6e81-45ae-88f2-870efc3ac647": {
+    "slug": "luna-divina",
+    "brand": null,
+    "shortDescription": null,
+    "description": null,
+    "keywords": [],
+    "price": 79.9,
+    "creditPrice": 88.9
+  },
+  "f3bd23dd-7bb7-43bf-bf54-727ac5caa825": {
+    "slug": "kit-her-code",
+    "brand": null,
+    "shortDescription": null,
+    "description": null,
+    "keywords": [],
+    "price": 129,
+    "creditPrice": 143
+  },
+  "f676ee5f-8c85-40e0-b85b-502f863bacdd": {
+    "slug": "her-code-touch",
+    "brand": null,
+    "shortDescription": null,
+    "description": null,
+    "keywords": [],
+    "price": 179.5,
+    "creditPrice": 199
+  },
+  "fd52c62c-7cb7-402a-ba08-d98e1bd0c6f8": {
+    "slug": "kit-liz-tradicional",
+    "brand": null,
+    "shortDescription": null,
+    "description": null,
+    "keywords": [],
+    "price": 170,
+    "creditPrice": 188
+  },
+  "ffb425e5-b8eb-4712-98b1-bba3430bfcbd": {
+    "slug": "essencial-sentir",
+    "brand": null,
+    "shortDescription": null,
+    "description": null,
+    "keywords": [],
+    "price": 126,
+    "creditPrice": null
+  }
+}

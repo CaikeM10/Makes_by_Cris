@@ -3,12 +3,13 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { ChevronRight } from 'lucide-react'
 import { ProductBrowser } from '@/components/product-browser'
-import { getPublicCatalog } from '@/lib/catalog/public-server'
+import { SafeImage } from '@/components/safe-image'
+import { getHomeCatalog } from '@/lib/catalog/home-server'
 
 type PageProps = { params: Promise<{ slug: string }> }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
-  const { getCategoryBySlug } = await getPublicCatalog()
+  const { getCategoryBySlug } = await getHomeCatalog()
   const { slug } = await params
   const category = getCategoryBySlug(slug)
   if (!category) return { title: 'Categoria não encontrada' }
@@ -17,7 +18,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 }
 
 export default async function CategoriaPage({ params }: PageProps) {
-  const { getCategoryBySlug, getProductsByCategory } = await getPublicCatalog()
+  const { getCategoryBySlug, getProductsByCategory } = await getHomeCatalog()
   const { slug } = await params
   const category = getCategoryBySlug(slug)
 
@@ -28,8 +29,9 @@ export default async function CategoriaPage({ params }: PageProps) {
   return (
     <div className="flex flex-col">
       <div className="relative overflow-hidden bg-muted">
-        <img
+        <SafeImage
           src={category.image || '/placeholder.svg'}
+          fallbackSources={category.imageFallbacks}
           alt=""
           className="absolute inset-0 size-full object-cover"
         />

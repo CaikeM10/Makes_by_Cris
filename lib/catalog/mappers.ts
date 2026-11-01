@@ -8,7 +8,7 @@ export function mapPublicProduct(row: PublicProductRow, category: Category): Pub
   return {
     id: row.id, name: row.name, slug: row.slug,
     shortDescription: row.short_description, description: row.description,
-    price: Number(row.price), creditPrice: Number(row.credit_price),
+    price: Number(row.price), creditPrice: row.credit_price === null ? null : Number(row.credit_price),
     image: resolveProductImage(row.image), category: category.slug, brand: row.brand,
     keywords: row.keywords, variations: row.variations ?? undefined,
     featured: row.featured, bestSeller: row.best_seller, giftSection: row.gift_section,
@@ -17,5 +17,5 @@ export function mapPublicProduct(row: PublicProductRow, category: Category): Pub
 }
 
 export function mapProduct(row: ProductRow): AdminProduct {
-  return { ...row, price: Number(row.price).toFixed(2), credit_price: Number(row.credit_price).toFixed(2) };
+  return { ...row, price: Number(row.price).toFixed(2), credit_price: row.credit_price === null ? null : Number(row.credit_price).toFixed(2) };
 }

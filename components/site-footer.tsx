@@ -3,6 +3,7 @@ import { MapPin, MessageCircle, ShoppingBag } from "lucide-react";
 
 import { BrandLogo } from "@/components/brand-logo";
 import { getPublicCatalog } from "@/lib/catalog/public-server";
+import { getPublicCategoriesWithProducts } from "@/lib/catalog/home-catalog";
 import { storeConfig } from "@/lib/store-config";
 
 /* =====================================================
@@ -39,8 +40,7 @@ function InstagramIcon({ className = "" }: { className?: string }) {
 }
 
 export async function SiteFooter() {
-  const { categories } = await getPublicCatalog();
-  const activeCategories = categories.filter((category) => category.active);
+  const activeCategories = getPublicCategoriesWithProducts(await getPublicCatalog());
 
   const instagramUsername = storeConfig.instagram.replace("@", "");
 

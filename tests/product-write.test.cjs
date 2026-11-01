@@ -63,6 +63,19 @@ test('criação inativa conserva active=false', async () => {
   const f = fixture(); await f.save({ ...valid, active: false });
   assert.equal(f.calls.find(c => c[0] === 'insert')[1].active, false);
 });
+
+test('Admin persiste crédito vazio como null na criação e edição sem mudar PIX', async () => {
+  const created = fixture();
+  assert.equal((await created.save({ ...valid, credit_price: '' })).error, undefined);
+  const row = created.calls.find(c => c[0] === 'insert')[1];
+  assert.equal(row.credit_price, null);
+  assert.equal(row.price, '12.50');
+  const edited = fixture();
+  assert.equal((await edited.save({ ...valid, credit_price: '' }, null, { id: 'p-01', version })).error, undefined);
+  const patch = edited.calls.find(c => c[0] === 'update')[3];
+  assert.equal(patch.credit_price, null);
+  assert.equal(patch.price, '12.50');
+});
 test('obrigatórios e categoria inválida bloqueiam upload e INSERT', async () => {
   for (const input of [{ ...valid, name: '' }, { ...valid, price: '-1' }, { ...valid, category_id: 'unknown' }]) {
     const f = fixture(); assert.ok((await f.save(input)).error); assert.equal(f.calls.length, 0);
@@ -232,6 +245,14 @@ test('formulário compartilhado renderiza cadastro e edição com seleção de i
   assert.match(created, /Cadastrar produto/); assert.match(created, /Escolher foto/);
   for (const name of [...Object.keys(valid), 'image']) assert.ok(created.includes(`name="${name}"`), name);
   assert.match(created, /accept="image\/jpeg,image\/png,image\/webp"/);
+  assert.match(created.match(/<input[^>]*name="name"[^>]*>/)[0], /required=""/);
+  for (const name of ['brand', 'short_description', 'description']) {
+    assert.doesNotMatch(created.match(new RegExp(`<(?:input|textarea)[^>]*name="${name}"[^>]*>`))[0], /required=/);
+  }
   const edited = renderToString(React.createElement(ProductForm, { categories, product: { ...valid, image: '/products/legacy.webp', id: 'p-01', updated_at: version } }));
   assert.match(edited, /Alterar foto/); assert.match(edited, /Salvar alterações/); assert.match(edited, /src="\/products\/legacy.webp"/);
+  const unknown = renderToString(React.createElement(ProductForm, { categories: [{ ...categories[0], active: false }], product: { ...valid, brand: null, short_description: null, description: null, active: false, id: 'reserved-id', updated_at: version } }));
+  assert.match(unknown.replace(/<!--.*?-->/g, ''), /Maquiagem \(inativa\)/);
+  assert.match(unknown.match(/<input[^>]*name="brand"[^>]*>/)[0], /value=""/);
+  assert.doesNotMatch(unknown.replace(/<script>[\s\S]*?<\/script>/g, ''), /null|undefined/);
 });

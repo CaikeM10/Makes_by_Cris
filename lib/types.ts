@@ -11,21 +11,21 @@ export type Product = {
   id: string;
   name: string;
   slug: string;
-  shortDescription: string;
-  description: string;
+  shortDescription: string | null;
+  description: string | null;
 
   /** Preço à vista / PIX */
   price: number;
 
   /** Preço para pagamento no cartão de crédito */
-  creditPrice: number;
+  creditPrice: number | null;
 
   image: string;
 
   /** slug da categoria */
   category: string;
 
-  brand: string;
+  brand: string | null;
   keywords: string[];
   variations?: string[];
   featured: boolean;

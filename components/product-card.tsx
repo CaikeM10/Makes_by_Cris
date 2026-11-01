@@ -1,4 +1,6 @@
 import Link from "next/link";
+import { SafeImage } from "@/components/safe-image";
+import { resolveProductImage } from "@/lib/catalog/product-image";
 import { AddToBagButton } from "@/components/add-to-bag-button";
 import { FavoriteButton } from "@/components/favorite-button";
 import { formatCurrency } from "@/lib/format";
@@ -14,8 +16,8 @@ export function ProductCard({ product }: { product: Product }) {
           tabIndex={-1}
           aria-hidden="true"
         >
-          <img
-            src={product.image || "/placeholder.svg"}
+          <SafeImage
+            src={resolveProductImage(product.image) || "/placeholder.svg"}
             alt={product.name}
             className="aspect-square w-full object-cover transition-transform duration-500 group-hover:scale-[1.04]"
           />
@@ -35,7 +37,7 @@ export function ProductCard({ product }: { product: Product }) {
       </div>
 
       <div className="flex flex-1 flex-col gap-1 pt-3.5">
-        <p className="eyebrow text-muted-foreground">{product.brand}</p>
+        {product.brand && <p className="eyebrow text-muted-foreground">{product.brand}</p>}
 
         <h3 className="text-sm leading-snug font-medium text-pretty">
           <Link
@@ -46,9 +48,9 @@ export function ProductCard({ product }: { product: Product }) {
           </Link>
         </h3>
 
-        <p className="line-clamp-2 text-xs leading-relaxed text-muted-foreground">
+        {product.shortDescription && <p className="line-clamp-2 text-xs leading-relaxed text-muted-foreground">
           {product.shortDescription}
-        </p>
+        </p>}
 
         <div className="mt-auto flex items-end justify-between gap-2 pt-3">
           <div className="flex flex-col">
@@ -60,9 +62,9 @@ export function ProductCard({ product }: { product: Product }) {
               à vista no PIX
             </span>
 
-            <span className="mt-1 text-[0.625rem] leading-tight text-muted-foreground">
+            {product.creditPrice !== null && <span className="mt-1 text-[0.625rem] leading-tight text-muted-foreground">
               {formatCurrency(product.creditPrice)} no crédito · até 6x
-            </span>
+            </span>}
           </div>
 
           <AddToBagButton product={product} variant="compact" />

@@ -1,15 +1,14 @@
 import type { Metadata } from 'next'
 import { CategoryCard } from '@/components/category-card'
-import { getPublicCatalog } from '@/lib/catalog/public-server'
+import { getHomeCatalog } from '@/lib/catalog/home-server'
 
 export const metadata: Metadata = {
   title: 'Categorias',
-  description: 'Explore maquiagem, perfumes, cabelos, skincare, corpo e banho e acessórios.',
+  description: 'Explore as categorias e descubra os produtos disponíveis no catálogo.',
 }
 
 export default async function CategoriasPage() {
-  const { categories, getProductsByCategory } = await getPublicCatalog()
-  const activeCategories = categories.filter((category) => category.active)
+  const { categories, counts } = await getHomeCatalog()
 
   return (
     <div className="container-boutique flex flex-col gap-8 py-10 lg:py-14">
@@ -22,11 +21,11 @@ export default async function CategoriasPage() {
       </header>
 
       <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-3">
-        {activeCategories.map((category) => (
+        {categories.map((category) => (
           <div key={category.id} className="flex flex-col gap-3">
             <CategoryCard
               category={category}
-              count={getProductsByCategory(category.slug).length}
+              count={counts[category.slug]}
               className="aspect-[3/4]"
             />
             <p className="px-1 text-xs leading-relaxed text-muted-foreground">

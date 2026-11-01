@@ -4,14 +4,14 @@ import Link from 'next/link'
 import { ArrowRight, Minus, Plus, ShoppingBag, Trash2 } from 'lucide-react'
 import { LinkButton } from '@/components/link-button'
 import { useStore } from '@/components/store-provider'
-import { getCartTotal, getLineTotal } from '@/lib/pricing'
+import { canPayWithCredit, getCartTotal, getLineTotal } from '@/lib/pricing'
 import { formatCurrency } from '@/lib/format'
 import { deliveryNotice } from '@/lib/delivery'
 
 export default function SacolaPage() {
   const { items, subtotal, bagCount, updateQuantity, removeItem, clearBag } = useStore()
 
-  const creditTotal = getCartTotal(items, 'Cartão de crédito')
+  const creditTotal = canPayWithCredit(items) ? getCartTotal(items, 'Cartão de crédito') : null
 
   if (items.length === 0) {
     return (
@@ -77,7 +77,7 @@ export default function SacolaPage() {
                 <div className="flex flex-1 flex-col gap-2">
                   <div className="flex items-start justify-between gap-3">
                     <div className="flex flex-col gap-0.5">
-                      <p className="eyebrow text-muted-foreground">{item.product.brand}</p>
+                      {item.product.brand && <p className="eyebrow text-muted-foreground">{item.product.brand}</p>}
                       <h2 className="text-sm leading-snug font-medium text-pretty">
                         <Link href={`/produto/${item.product.slug}`} className="hover:text-primary">
                           {item.product.name}
@@ -142,10 +142,10 @@ export default function SacolaPage() {
                 <dt className="text-secondary-foreground/75">Subtotal no PIX, débito ou dinheiro</dt>
                 <dd className="shrink-0 font-medium">{formatCurrency(subtotal)}</dd>
               </div>
-              <div className="flex items-center justify-between gap-4">
+              {creditTotal !== null && <div className="flex items-center justify-between gap-4">
                 <dt className="text-secondary-foreground/75">Total no crédito</dt>
                 <dd className="shrink-0 font-medium">{formatCurrency(creditTotal)}</dd>
-              </div>
+              </div>}
               <div className="flex items-center justify-between gap-4">
                 <dt className="text-secondary-foreground/75">Entrega</dt>
                 <dd className="text-secondary-foreground/75">

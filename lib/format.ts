@@ -1,6 +1,6 @@
 /** Deixa o texto comparável: sem caixa, sem acento e sem espaços sobrando. */
-export function normalizeText(value: string) {
-  return value
+export function normalizeText(value: string | null | undefined) {
+  return (value ?? '')
     .trim()
     .toLowerCase()
     .normalize('NFD')

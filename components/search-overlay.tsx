@@ -1,17 +1,20 @@
 'use client'
 
-import { useDeferredValue, useEffect, useMemo, useRef, useState } from 'react'
+import { useDeferredValue, useEffect, useMemo, useRef, useState, type RefObject } from 'react'
 import Link from 'next/link'
 import { ArrowUpRight, Search, SearchX, X } from 'lucide-react'
 import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog'
 import { useCatalog } from '@/components/catalog-provider'
 import { formatCurrency, normalizeText } from '@/lib/format'
+import { SEARCH_PAGE_SIZE } from '@/lib/catalog/search-catalog'
+import { SafeImage } from '@/components/safe-image'
+import { resolveProductImage } from '@/lib/catalog/product-image'
 
-const suggestions = ['batom', 'perfume', 'base', 'hidratante', 'skincare', 'pincéis']
 
 type SearchOverlayProps = {
   open: boolean
   onOpenChange: (open: boolean) => void
+  returnFocus?: RefObject<HTMLElement | null>
 }
 
 /** Destaca a primeira palavra buscada dentro do nome, quando ela aparece literalmente. */
@@ -33,10 +36,31 @@ function HighlightedName({ name, term }: { name: string; term: string }) {
   )
 }
 
-export function SearchOverlay({ open, onOpenChange }: SearchOverlayProps) {
-  const { searchProducts, categories, getCategoryName, searchCategories } = useCatalog()
+export function SearchOverlay({ open, onOpenChange, returnFocus }: SearchOverlayProps) {
+  const { search: { searchProducts, categories, counts, suggestions, getCategoryName, searchCategories } } = useCatalog()
   const [query, setQuery] = useState('')
   const inputRef = useRef<HTMLInputElement>(null)
+  const panelRef = useRef<HTMLDivElement>(null)
+  const [visibleCount, setVisibleCount] = useState(SEARCH_PAGE_SIZE)
+
+  useEffect(() => { setVisibleCount(SEARCH_PAGE_SIZE) }, [query])
+  useEffect(() => {
+    if (!open) return
+    const viewport = window.visualViewport
+    const syncViewport = () => {
+      panelRef.current?.style.setProperty('--search-viewport-height', `${viewport?.height || window.innerHeight}px`)
+      panelRef.current?.style.setProperty('--search-viewport-top', `${viewport?.offsetTop || 0}px`)
+    }
+    syncViewport()
+    viewport?.addEventListener('resize', syncViewport)
+    viewport?.addEventListener('scroll', syncViewport)
+    window.addEventListener('resize', syncViewport)
+    return () => {
+      viewport?.removeEventListener('resize', syncViewport)
+      viewport?.removeEventListener('scroll', syncViewport)
+      window.removeEventListener('resize', syncViewport)
+    }
+  }, [open])
 
   // useDeferredValue mantém a digitação fluida sem atrasar o resultado artificialmente.
   const deferredQuery = useDeferredValue(query)
@@ -49,18 +73,27 @@ export function SearchOverlay({ open, onOpenChange }: SearchOverlayProps) {
   const matchedCategories = useMemo(() => searchCategories(deferredQuery), [deferredQuery, searchCategories])
 
   const hasQuery = query.trim().length > 0
-  const isEmpty = hasQuery && results.length === 0 && matchedCategories.length === 0
+  const isSearching = query !== deferredQuery
+  const isEmpty = hasQuery && !isSearching && results.length === 0 && matchedCategories.length === 0
 
   function clearQuery() {
     setQuery('')
     inputRef.current?.focus()
   }
 
+  function applySuggestion(term: string) {
+    setQuery(term)
+    inputRef.current?.focus()
+  }
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent
+        ref={panelRef}
+        initialFocus={inputRef}
+        finalFocus={returnFocus}
         showCloseButton={false}
-        className="top-0 flex h-dvh max-h-dvh translate-y-0 flex-col gap-0 overflow-hidden rounded-none border-0 p-0 sm:top-12 sm:h-auto sm:max-h-[80dvh] sm:max-w-2xl sm:rounded-2xl sm:border"
+        className="top-[var(--search-viewport-top,0px)] flex h-[var(--search-viewport-height,100dvh)] max-h-[var(--search-viewport-height,100dvh)] max-w-none translate-y-0 flex-col gap-0 overflow-hidden rounded-none border-0 p-0 sm:top-[calc(var(--search-viewport-top,0px)+3rem)] sm:h-auto sm:max-h-[min(80dvh,var(--search-viewport-height,100dvh))] sm:max-w-2xl sm:rounded-2xl sm:border"
       >
         <DialogTitle className="sr-only">Buscar produtos</DialogTitle>
 
@@ -68,7 +101,6 @@ export function SearchOverlay({ open, onOpenChange }: SearchOverlayProps) {
           <Search className="size-4 shrink-0 text-muted-foreground sm:size-5" aria-hidden="true" />
           <input
             ref={inputRef}
-            autoFocus
             type="text"
             inputMode="search"
             enterKeyHint="search"
@@ -92,23 +124,25 @@ export function SearchOverlay({ open, onOpenChange }: SearchOverlayProps) {
           <button
             type="button"
             onClick={() => onOpenChange(false)}
-            className="shrink-0 rounded-full px-2 py-1 text-xs tracking-[0.12em] text-muted-foreground uppercase transition-colors hover:bg-secondary hover:text-foreground"
+            aria-label="Fechar busca"
+            className="min-h-11 shrink-0 rounded-full px-2 py-1 text-xs tracking-[0.12em] text-muted-foreground uppercase transition-colors hover:bg-secondary hover:text-foreground"
           >
             Fechar
           </button>
         </div>
 
-        <div className="min-h-0 flex-1 overflow-y-auto px-3 py-4 sm:px-5 sm:py-5">
+        <div data-search-scroll aria-busy={isSearching}
+          className="min-h-0 flex-1 overflow-x-hidden overflow-y-auto overscroll-contain px-3 pt-4 pb-[max(1rem,env(safe-area-inset-bottom))] sm:px-5 sm:py-5">
           {!hasQuery && (
             <div className="flex flex-col gap-6">
               <div className="flex flex-col gap-3">
-                <p className="eyebrow text-muted-foreground">Buscas frequentes</p>
+                <p className="eyebrow text-muted-foreground">Sugestões</p>
                 <div className="flex flex-wrap gap-2">
                   {suggestions.map((term) => (
                     <button
                       key={term}
                       type="button"
-                      onClick={() => setQuery(term)}
+                      onClick={() => applySuggestion(term)}
                       className="rounded-full border border-border bg-card px-3.5 py-1.5 text-sm transition-colors hover:border-primary/40 hover:bg-secondary"
                     >
                       {term}
@@ -123,16 +157,18 @@ export function SearchOverlay({ open, onOpenChange }: SearchOverlayProps) {
                   {categories.map((category) => (
                     <Link
                       key={category.id}
+                      prefetch={false}
                       href={`/categoria/${category.slug}`}
                       onClick={() => onOpenChange(false)}
                       className="flex items-center gap-3 rounded-xl px-1.5 py-2 transition-colors hover:bg-secondary"
                     >
-                      <img
+                      <SafeImage
                         src={category.image || '/placeholder.svg'}
+                        fallbackSources={category.imageFallbacks}
                         alt=""
                         className="size-9 shrink-0 rounded-lg object-cover"
                       />
-                      <span className="truncate text-sm font-medium">{category.name}</span>
+                      <span className="flex min-w-0 flex-col"><span className="text-sm font-medium">{category.name}</span><span className="text-xs text-muted-foreground">{counts[category.slug]} {counts[category.slug] === 1 ? 'produto' : 'produtos'}</span></span>
                     </Link>
                   ))}
                 </div>
@@ -141,16 +177,14 @@ export function SearchOverlay({ open, onOpenChange }: SearchOverlayProps) {
           )}
 
           {isEmpty && (
-            <div className="flex flex-col items-center gap-4 px-4 py-12 text-center">
+            <div role="status" className="flex flex-col items-center gap-4 px-4 py-12 text-center">
               <span className="flex size-12 items-center justify-center rounded-full border border-border bg-card">
                 <SearchX className="size-5 text-primary" aria-hidden="true" />
               </span>
               <div className="flex flex-col gap-1.5">
-                <p className="font-serif text-xl leading-snug">Nada encontrado por aqui</p>
+                <p className="font-serif text-xl leading-snug [overflow-wrap:anywhere]">Nenhum produto encontrado para &ldquo;{query.trim()}&rdquo;</p>
                 <p className="text-sm leading-relaxed text-muted-foreground">
-                  Não localizamos nada para{' '}
-                  <span className="text-foreground">&ldquo;{query.trim()}&rdquo;</span>. Tente outro
-                  nome ou explore uma categoria.
+                  Tente outro termo ou navegue pelas categorias.
                 </p>
               </div>
               <div className="flex flex-wrap justify-center gap-2 pt-1">
@@ -158,7 +192,7 @@ export function SearchOverlay({ open, onOpenChange }: SearchOverlayProps) {
                   <button
                     key={term}
                     type="button"
-                    onClick={() => setQuery(term)}
+                    onClick={() => applySuggestion(term)}
                     className="rounded-full border border-border bg-card px-3.5 py-1.5 text-xs transition-colors hover:border-primary/40 hover:bg-secondary"
                   >
                     {term}
@@ -177,6 +211,7 @@ export function SearchOverlay({ open, onOpenChange }: SearchOverlayProps) {
                     {matchedCategories.map((category) => (
                       <Link
                         key={category.id}
+                        prefetch={false}
                         href={`/categoria/${category.slug}`}
                         onClick={() => onOpenChange(false)}
                         className="flex items-center gap-1.5 rounded-full border border-border bg-card px-3.5 py-1.5 text-sm transition-colors hover:border-primary/40 hover:bg-secondary"
@@ -189,21 +224,23 @@ export function SearchOverlay({ open, onOpenChange }: SearchOverlayProps) {
                 </div>
               )}
 
+              <p className="sr-only" role="status" aria-live="polite">{isSearching ? 'Buscando…' : `${results.length} produtos encontrados.`}</p>
               {results.length > 0 && (
                 <div className="flex flex-col gap-2">
                   <p className="eyebrow text-muted-foreground">
                     {results.length} {results.length === 1 ? 'produto' : 'produtos'}
                   </p>
                   <div className="flex flex-col">
-                    {results.map((product) => (
+                    {results.slice(0, visibleCount).map((product) => (
                       <Link
                         key={product.id}
+                        prefetch={false}
                         href={`/produto/${product.slug}`}
                         onClick={() => onOpenChange(false)}
                         className="flex items-center gap-3 rounded-xl px-1.5 py-2 transition-colors hover:bg-secondary"
                       >
-                        <img
-                          src={product.image || '/placeholder.svg'}
+                        <SafeImage
+                          src={resolveProductImage(product.image) || '/placeholder.svg'}
                           alt=""
                           className="size-12 shrink-0 rounded-lg bg-muted object-cover"
                         />
@@ -211,10 +248,10 @@ export function SearchOverlay({ open, onOpenChange }: SearchOverlayProps) {
                           <span className="truncate text-sm leading-snug font-medium">
                             <HighlightedName name={product.name} term={deferredQuery} />
                           </span>
-                          <span className="truncate text-xs text-muted-foreground">
+                          {product.shortDescription && <span className="truncate text-xs text-muted-foreground">
                             {product.shortDescription}
-                          </span>
-                          <span className="flex items-center gap-1.5 text-[0.7rem] text-muted-foreground">
+                          </span>}
+                          <span className="flex flex-wrap items-center gap-1.5 text-[0.7rem] text-muted-foreground">
                             <span className="tracking-[0.1em] uppercase">
                               {getCategoryName(product.category)}
                             </span>
@@ -227,6 +264,7 @@ export function SearchOverlay({ open, onOpenChange }: SearchOverlayProps) {
                       </Link>
                     ))}
                   </div>
+                  {results.length > visibleCount && <button type="button" onClick={() => setVisibleCount(count => count + SEARCH_PAGE_SIZE)} className="min-h-11 rounded-full border border-border px-4 py-2 text-sm hover:bg-secondary">Mostrar mais resultados ({results.length - visibleCount})</button>}
                 </div>
               )}
             </div>
