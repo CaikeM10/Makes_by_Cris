@@ -99,3 +99,34 @@ test('checkout remove CEP e usa validador central e campos condicionais', () => 
   assert.ok(source.includes('data.receivingMode === "delivery" && ('));
   assert.ok(source.includes('{isDelivery && ('));
 });
+
+test('Outra cidade exige cidade, UF válida, rua e bairro', () => {
+  const delivery = { receivingMode: 'delivery', city: 'other-city' };
+  const invalid = errors(delivery);
+  for (const key of ['deliveryCity', 'deliveryState', 'street', 'district']) assert.ok(invalid[key], key);
+  assert.equal(invalid.city, undefined);
+  const full = { ...delivery, deliveryCity: ' Fortaleza ', deliveryState: 'CE', street: 'Principal', district: 'Centro' };
+  assert.equal(Object.keys(errors(full)).length, 0);
+  for (const deliveryCity of ['', '  ']) assert.ok(errors({ ...full, deliveryCity }).deliveryCity);
+  for (const deliveryState of ['', 'XX', 'ce']) assert.ok(errors({ ...full, deliveryState }).deliveryState);
+  assert.ok(errors({ ...full, street: '' }).street);
+  assert.ok(errors({ ...full, district: '' }).district);
+  const text = message(full);
+  assert.match(text, /Cidade: Fortaleza - CE/);
+  assert.match(text, /Rua: Principal/);
+  assert.match(text, /Bairro: Centro/);
+  assert.match(text, /Frete a combinar/);
+  assert.doesNotMatch(text, /undefined|null|Grátis/);
+  assert.doesNotMatch(message(delivery), /undefined|null/);
+  assert.equal(Object.keys(errors({ ...delivery, receivingMode: 'store-pickup' })).length, 0);
+  assert.doesNotMatch(message({ ...full, receivingMode: 'store-pickup' }), /Fortaleza|Frete a combinar/);
+  assert.doesNotMatch(message({ ...full, city: 'Poranga - CE' }), /Fortaleza|Frete a combinar/);
+});
+
+test('interface oferece Outra cidade e reutiliza endereço com campos nacionais condicionais', () => {
+  const source = fs.readFileSync(path.join(root, 'app/(loja)/checkout/page.tsx'), 'utf8');
+  assert.ok(source.includes('<SelectItem value={otherCityValue}>Outra cidade</SelectItem>'));
+  assert.ok(source.includes('{otherCity && ('));
+  for (const id of ['deliveryCity', 'deliveryState', 'street', 'district']) assert.equal((source.match(new RegExp('id="' + id + '"', 'g')) || []).length, 1);
+  assert.ok(source.indexOf('if (!validate())') < source.indexOf('window.open('));
+});

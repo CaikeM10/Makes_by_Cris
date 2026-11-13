@@ -7,6 +7,12 @@ const base = 'https://example.supabase.co';
 const p = { ...fixture.products[0], id: 'test', name: 'Product', category: 'gifts', image: '/product.webp', active: true, available: true };
 const c = { id: 'category', slug: 'gifts', name: 'Presentes Femininos', active: true, image: '' };
 const select = (products = [p], categories = [c], valid = []) => selectHomeCatalog({ products, categories }, new Set(valid));
+const originImage = origin => {
+  if (origin === 'unknown-origin') return `${base}/storage/v1/object/public/product-images/products/00000000-0000-4000-8000-000000000001/${'a'.repeat(64)}.webp`;
+  const product = fixture.products.find(row => homeImageOrigin(row.image) === origin);
+  assert.ok(product, `current fixture includes ${origin}`);
+  return product.image;
+};
 
 test('current public fixture returns eight populated categories, counts totaling 69', () => {
   const home = selectHomeCatalog(fixture);
@@ -25,10 +31,9 @@ test('verified own category image wins; unverified/broken own source is skipped'
   assert.equal(select([p], [{ ...c, image: '/missing.webp' }]).categories[0].image, p.image);
 });
 test('confirmed product image wins over unknown, provisional and legacy artwork', () => {
-  const origins = require('../lib/catalog/home-image-origins.json');
-  const entries = Object.entries(origins);
   const rows = ['generated-provisional', 'unknown-origin', 'confirmed-existing'].map((origin, i) => ({ ...p, id: 'p' + i,
-    image: base + '/storage/v1/object/public/product-images/' + entries.find(([, value]) => value === origin)[0] }));
+    image: originImage(origin) }));
+  rows.forEach((row, i) => assert.equal(homeImageOrigin(row.image), ['generated-provisional', 'unknown-origin', 'confirmed-existing'][i]));
   const home = select(rows, [{ ...c, image: '/images/categorias/cabelos.png' }], ['/images/categorias/cabelos.png']);
   assert.equal(home.categories[0].image, rows[2].image);
   assert.equal(homeImageOrigin(home.categories[0].image), 'confirmed-existing');
@@ -121,8 +126,23 @@ test('category image availability rejects missing files, empty values and unsafe
 });
 
 test('unknown image origin is preferred to provisional when no confirmed photo exists', () => {
-  const entries = Object.entries(require('../lib/catalog/home-image-origins.json'));
   const rows = ['generated-provisional', 'unknown-origin'].map((origin, i) => ({ ...p, id: 'p-' + i,
-    image: base + '/storage/v1/object/public/product-images/' + entries.find(([, value]) => value === origin)[0] }));
+    image: originImage(origin) }));
+  assert.equal(homeImageOrigin(rows[0].image), 'generated-provisional');
+  assert.equal(homeImageOrigin(rows[1].image), 'unknown-origin');
   assert.equal(select(rows).categories[0].image, rows[1].image);
+});
+
+test('current catalog fixtures agree on all product images and confirm the 55 final images', () => {
+  const paths = require('./fixtures/catalog-image-paths.json');
+  assert.equal(paths.length, fixture.products.length);
+  assert.equal(new Set(paths.map(row => row.id)).size, paths.length);
+  for (const row of paths) {
+    const product = fixture.products.find(product => product.id === row.id);
+    assert.ok(product, row.id);
+    assert.equal(product.image.split('/storage/v1/object/public/product-images/').pop(), row.path);
+  }
+  const finalImages = paths.filter(row => /\/[a-f0-9]{64}\.(jpg|png)$/.test(row.path));
+  assert.equal(finalImages.length, 55);
+  for (const row of finalImages) assert.equal(homeImageOrigin(row.path), 'confirmed-existing', row.id);
 });

@@ -42,10 +42,20 @@ test('every current category image belongs to its own real product, no legacy ar
     }
   }
 });
-test('provisional product image outranks legacy artwork when no confirmed image exists', () => {
+test('Cabelos uses its approved final image before legacy artwork', () => {
   const c = selection.categories.find(c => c.name === 'Cabelos');
-  assert.equal(homeImageOrigin(c.image), 'generated-provisional');
+  assert.equal(homeImageOrigin(c.image), 'confirmed-existing');
   assert.ok(c.imageFallbacks.includes('/images/categorias/cabelos.png'));
+});
+
+test('provisional product image outranks legacy artwork when no confirmed image exists', () => {
+  const category = fixture.categories.find(c => c.name === 'Cabelos');
+  const provisional = fixture.products.find(p => homeImageOrigin(p.image) === 'generated-provisional');
+  assert.ok(provisional, 'current fixture includes a provisional product');
+  const isolated = selectHomeCatalog({ categories: [category], products: [{ ...provisional, category: category.slug }] }, legacy);
+  assert.equal(isolated.categories[0].image, provisional.image);
+  assert.equal(homeImageOrigin(isolated.categories[0].image), 'generated-provisional');
+  assert.ok(isolated.categories[0].imageFallbacks.includes('/images/categorias/cabelos.png'));
 });
 test('categories page consumes the exact shared selection without rebuilding counts or images', async () => {
   const custom = { categories: [{ id: 'new', name: 'Nova Categoria', slug: 'nova', active: true, image: '/verified.webp' }], counts: { nova: 7 } };

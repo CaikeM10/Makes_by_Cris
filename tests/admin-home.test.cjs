@@ -48,10 +48,21 @@ test('public category count excludes inactive/unavailable products and inactive 
 });
 
 test('provisional review evidence belongs to the exact current image path', () => {
-  const p = products.find(p => p.image.includes(Object.keys(require('../lib/catalog/home-image-origins.json')).find(key => require('../lib/catalog/home-image-origins.json')[key] === 'generated-provisional')));
+  const origins = require('../lib/catalog/home-image-origins.json');
+  const p = products.find(p => origins[p.image.split('/storage/v1/object/public/product-images/').pop()] === 'generated-provisional');
+  assert.ok(p, 'current catalog retains a provisional product for this scenario');
   assert.equal(summarizeAdminCatalog([p], fixture.categories).provisionalImages, 1);
   assert.equal(summarizeAdminCatalog([{ ...p, image: `products/${p.id}/replacement.webp` }], fixture.categories).provisionalImages, 0);
   assert.ok(summary.reviewProducts.length <= 3);
+});
+
+test('approved final images do not appear as provisional in the Admin summary', () => {
+  const finals = products.filter(p => /\/[a-f0-9]{64}\.(jpg|png)$/.test(p.image));
+  assert.equal(finals.length, 55);
+  const result = summarizeAdminCatalog(finals, fixture.categories);
+  assert.equal(result.totalProducts, 55);
+  assert.equal(result.provisionalImages, 0);
+  assert.equal(result.reviewProducts.length, 0);
 });
 
 function mockClient(rows, categories, fail = false) {
