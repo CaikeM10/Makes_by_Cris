@@ -60,6 +60,8 @@ export type CheckoutData = {
   district: string;
   city: string;
   landmark: string;
+  deliveryCity?: string;
+  deliveryState?: string;
 };
 
 export type OrderStatus = "Novo" | "Em andamento" | "Concluído" | "Cancelado";

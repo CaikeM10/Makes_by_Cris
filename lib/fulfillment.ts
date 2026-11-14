@@ -25,6 +25,13 @@ export function getFulfillmentLocation(city: string) {
   return fulfillmentLocations.find((location) => location.city === city);
 }
 
+export const otherCityValue = "other-city";
+export const brazilianStates = ["AC", "AL", "AP", "AM", "BA", "CE", "DF", "ES", "GO", "MA", "MT", "MS", "MG", "PA", "PB", "PR", "PE", "PI", "RJ", "RN", "RS", "RO", "RR", "SC", "SP", "SE", "TO"] as const;
+
+export function isOtherCityDelivery(data: CheckoutData) {
+  return data.receivingMode === "delivery" && data.city === otherCityValue;
+}
+
 // A retirada na sede é independente dos pontos de recebimento nas cidades.
 export const storePickup = {
   city: storeConfig.city,
@@ -40,8 +47,13 @@ export function validateCheckout(data: CheckoutData): Record<string, string> {
     errors.payment = "Selecione a forma de pagamento.";
   if (data.receivingMode === "delivery") {
     const location = getFulfillmentLocation(data.city);
-    if (!location) errors.city = "Selecione uma cidade atendida.";
-    if (location?.type === "home-delivery") {
+    const otherCity = isOtherCityDelivery(data);
+    if (!location && !otherCity) errors.city = "Selecione uma cidade atendida.";
+    if (otherCity) {
+      if (!(data.deliveryCity?.trim())) errors.deliveryCity = "Informe a cidade da entrega.";
+      if (!brazilianStates.some(uf => uf === data.deliveryState)) errors.deliveryState = "Selecione o estado da entrega.";
+    }
+    if (location?.type === "home-delivery" || otherCity) {
       if (!data.street.trim()) errors.street = "Informe a rua para entrega.";
       if (!data.district.trim()) errors.district = "Informe o bairro para entrega.";
     }

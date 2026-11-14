@@ -1,6 +1,6 @@
 "use client";
 
-import { fulfillmentLabels, fulfillmentLocations, getFulfillmentLocation, storePickup, validateCheckout } from "@/lib/fulfillment";
+import { brazilianStates, fulfillmentLabels, fulfillmentLocations, getFulfillmentLocation, isOtherCityDelivery, otherCityValue, storePickup, validateCheckout } from "@/lib/fulfillment";
 
 import { useMemo, useState } from "react";
 import Link from "next/link";
@@ -43,6 +43,8 @@ const emptyData: CheckoutData = {
   district: "",
   city: "",
   landmark: "",
+  deliveryCity: "",
+  deliveryState: "",
 };
 
 export default function CheckoutPage() {
@@ -52,7 +54,9 @@ export default function CheckoutPage() {
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   const location = data.receivingMode === "delivery" ? getFulfillmentLocation(data.city) : undefined;
-  const isDelivery = location?.type === "home-delivery";
+  const otherCity = isOtherCityDelivery(data);
+  const isDelivery = location?.type === "home-delivery" || otherCity;
+  const freightLabel = otherCity ? "Frete a combinar" : deliveryFeeLabel;
 
   const creditAvailable = canPayWithCredit(items);
   const invalidCreditSelection = data.payment === "Cartão de crédito" && !creditAvailable;
@@ -75,7 +79,7 @@ export default function CheckoutPage() {
       const next = { ...current };
       delete next[key as string];
       if (key === "city" || key === "receivingMode") {
-        for (const field of ["city", "street", "number", "complement", "district", "landmark"]) delete next[field];
+        for (const field of ["city", "street", "number", "complement", "district", "landmark", "deliveryCity", "deliveryState"]) delete next[field];
       }
       return next;
     });
@@ -229,7 +233,7 @@ export default function CheckoutPage() {
             >
               {([
                 ["store-pickup", "Retirada na loja", `Retire seu pedido na ${storePickup.locationName} — ${storePickup.city}`],
-                ["delivery", "Entrega", "Receba em Poranga ou nas demais cidades atendidas"],
+                ["delivery", "Entrega", "Receba em Poranga ou em outras cidades do Brasil"],
               ] as const).map(([value, title, description]) => (
                 <Label key={value} htmlFor={`receiving-${value}`} className="flex cursor-pointer items-start gap-3 rounded-xl border border-border px-4 py-3.5 text-sm transition-colors has-[[data-state=checked]]:border-primary has-[[data-state=checked]]:bg-secondary">
                   <RadioGroupItem id={`receiving-${value}`} value={value} className="mt-0.5 shrink-0" />
@@ -251,18 +255,19 @@ export default function CheckoutPage() {
                     aria-describedby={errors.city ? "city-error city-delivery" : "city-delivery"}
                     className="w-full rounded-xl data-[size=default]:h-12"
                   >
-                    <SelectValue placeholder="Selecione a cidade" />
+                    <SelectValue placeholder="Selecione a cidade">{otherCity ? "Outra cidade" : data.city || undefined}</SelectValue>
                   </SelectTrigger>
                   <SelectContent>
                     {fulfillmentLocations.map(({ city }) => (
                       <SelectItem key={city} value={city}>{city}</SelectItem>
                     ))}
+                    <SelectItem value={otherCityValue}>Outra cidade</SelectItem>
                   </SelectContent>
                 </Select>
                 {errors.city && (
                   <p id="city-error" className="text-xs text-destructive">{errors.city}</p>
             )}
-                  <p id="city-delivery" className="text-xs text-primary">{deliveryNotice}</p>
+                  <p id="city-delivery" className="text-xs text-primary">{otherCity ? freightLabel : deliveryNotice}</p>
                 </div>
 
             )}
@@ -279,8 +284,27 @@ export default function CheckoutPage() {
 
           {isDelivery && (
             <fieldset className="flex flex-col gap-5">
-              <legend className="eyebrow mb-3 text-muted-foreground">Endereço de entrega em Poranga - CE</legend>
+              <legend className="eyebrow mb-3 text-muted-foreground">{otherCity ? "Endereço de entrega" : "Endereço de entrega em Poranga - CE"}</legend>
               <div className="grid gap-5 sm:grid-cols-2">
+                {otherCity && (
+                  <>
+                    <div className="flex min-w-0 flex-col gap-2">
+                      <Label htmlFor="deliveryCity">Cidade da entrega</Label>
+                      <Input id="deliveryCity" autoComplete="address-level2" value={data.deliveryCity ?? ""} onChange={event => update("deliveryCity", event.target.value)} aria-required="true" aria-invalid={Boolean(errors.deliveryCity)} aria-describedby={errors.deliveryCity ? "deliveryCity-error" : undefined} className="h-12 rounded-xl" />
+                      {errors.deliveryCity && <p id="deliveryCity-error" className="text-xs text-destructive">{errors.deliveryCity}</p>}
+                    </div>
+                    <div className="flex min-w-0 flex-col gap-2">
+                      <Label htmlFor="deliveryState">Estado/UF</Label>
+                      <Select value={data.deliveryState || null} onValueChange={value => update("deliveryState", value ?? "")}>
+                        <SelectTrigger id="deliveryState" aria-required="true" aria-invalid={Boolean(errors.deliveryState)} aria-describedby={errors.deliveryState ? "deliveryState-error" : undefined} className="w-full rounded-xl data-[size=default]:h-12">
+                          <SelectValue placeholder="Selecione a UF" />
+                        </SelectTrigger>
+                        <SelectContent>{brazilianStates.map(uf => <SelectItem key={uf} value={uf}>{uf}</SelectItem>)}</SelectContent>
+                      </Select>
+                      {errors.deliveryState && <p id="deliveryState-error" className="text-xs text-destructive">{errors.deliveryState}</p>}
+                    </div>
+                  </>
+                )}
                 <div className="flex flex-col gap-2 sm:col-span-2">
                   <Label htmlFor="street">Rua</Label>
                   <Input
@@ -407,7 +431,8 @@ export default function CheckoutPage() {
                 </div>
               )}
 
-              <p className="text-sm text-secondary-foreground/75">Frete: {deliveryFeeLabel}</p>
+              {otherCity && data.deliveryCity?.trim() && <p className="text-sm text-secondary-foreground/75">Cidade: {[data.deliveryCity.trim(), data.deliveryState].filter(Boolean).join(" - ")}</p>}
+              <p className="text-sm text-secondary-foreground/75">{otherCity ? freightLabel : `Frete: ${freightLabel}`}</p>
 
               <div className="mt-1 flex items-baseline justify-between gap-4">
                 <span className="eyebrow text-secondary-foreground/75">

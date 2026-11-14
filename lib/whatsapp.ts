@@ -1,4 +1,4 @@
-import { getFulfillmentLocation, storePickup } from "@/lib/fulfillment";
+import { getFulfillmentLocation, isOtherCityDelivery, storePickup } from "@/lib/fulfillment";
 import { storeConfig } from "@/lib/store-config";
 import { formatCurrency } from "@/lib/format";
 import type { CartItem, CheckoutData } from "@/lib/types";
@@ -47,8 +47,9 @@ export function buildOrderMessage(
   } else if (data.receivingMode === "delivery") {
     lines.push("*Forma de recebimento:*", "Entrega", "");
     const location = getFulfillmentLocation(data.city);
-    if (location) {
-      if (location.type === "home-delivery") {
+    const otherCity = isOtherCityDelivery(data);
+    if (location || otherCity) {
+      if (location?.type === "home-delivery" || otherCity) {
         lines.push("*Endereço:*");
         const fields = [
           ["Rua", data.street], ["Número", data.number],
@@ -58,15 +59,16 @@ export function buildOrderMessage(
         for (const [label, value] of fields) {
           if (value?.trim()) lines.push(`${label}: ${value.trim()}`);
         }
-        lines.push(`Cidade: ${location.city}`);
-      } else {
+        const city = otherCity ? [data.deliveryCity?.trim(), data.deliveryState?.trim()].filter(Boolean).join(" - ") : location?.city;
+        if (city) lines.push(`Cidade: ${city}`);
+      } else if (location) {
         lines.push("*Cidade:*", location.city, "");
         lines.push("*Local de recebimento:*", location.locationName);
         if (location.type === "delivery-point") lines.push("", "*Dia:*", location.day);
       }
     }
   }
-  lines.push("", "*Frete:*", deliveryFeeLabel);
+  lines.push("", "*Frete:*", isOtherCityDelivery(data) ? "Frete a combinar" : deliveryFeeLabel);
 
   lines.push("");
   lines.push("Aguardo a confirmação do pedido.");
