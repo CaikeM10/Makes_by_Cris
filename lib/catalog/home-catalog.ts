@@ -12,6 +12,17 @@ const originRanks: Record<string, number> = {
   "confirmed-existing": 0, "unknown-origin": 1, "generated-provisional": 2,
 };
 const origins: Record<string, string> = imageOrigins;
+// Official category covers follow each product's current image, including Admin replacements.
+const categoryCoverProductIds: Record<string, string> = {
+  "hidratantes-corporais": "9b65bb57-ba98-44b3-b310-8675c6a4fb1a",
+  "infantil": "92e0c220-924a-4ead-ad9e-66c65d41aedf",
+  "perfumes-femininos": "ec9b690c-79b6-4bad-a787-0cccbc1e73f2",
+  "perfumes-masculinos": "227ba16e-4dbc-4362-9592-0aa12c642dec",
+  "presentes-femininos": "ad589a22-4bea-4de4-9564-fb9092effed7",
+  "presentes-masculinos": "45d6668a-d450-46be-a18d-1d02ddd08777",
+  "cabelos": "43d20ee7-d439-4882-8c97-bca8406f4bf5",
+  "corpo-e-banho": "df1879db-6c03-4f19-be3c-b75bba255ae7",
+};
 const legacyCategoryArtwork = new Set([
   "/images/categorias/maquiagem.png", "/images/categorias/perfumes.png",
   "/images/categorias/cabelos.png", "/images/categorias/skincare.png",
@@ -64,8 +75,7 @@ export function selectHomeCatalog(catalog: PublicCatalog, validCategoryImages: R
     const legacyArtwork = legacyCategoryArtwork.has(own);
     const ownValid = validCategoryImages.has(own);
     const images = [
-      ...(category.slug === "perfumes-masculinos"
-        ? candidates.filter(p => p.id === "c9fb50bf-90f2-4173-bb14-31763f26da83").map(p => resolveProductImage(p.image)) : []),
+      ...candidates.filter(p => p.id === categoryCoverProductIds[category.slug]).map(p => resolveProductImage(p.image)),
       ...(ownValid && !legacyArtwork ? [own] : []),
       ...candidates.filter(p => homeImageOrigin(p.image) !== "generated-provisional").map(p => resolveProductImage(p.image)),
       ...candidates.filter(p => homeImageOrigin(p.image) === "generated-provisional").map(p => resolveProductImage(p.image)),

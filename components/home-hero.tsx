@@ -18,8 +18,8 @@ export function HomeHero({ campaign }: { campaign?: CampaignBanner | null }) {
         <p className="home-hero-eyebrow eyebrow text-primary">{seasonal ? campaign.name : storeConfig.tagline}</p>
         <h1 className="home-hero-title font-serif text-xl leading-[1.3] text-balance [overflow-wrap:anywhere] sm:text-3xl sm:leading-[1.25] lg:text-5xl">{seasonal ? campaign.title : 'Beleza selecionada, do jeito que combina com você'}</h1>
         <p className="home-hero-description max-w-xl text-sm leading-relaxed text-muted-foreground [overflow-wrap:anywhere]">{seasonal ? campaign.description : 'Perfumes, presentes e cuidados selecionados por Cris Martins. Escolha seus produtos e finalize o pedido pelo WhatsApp.'}</p>
-        <LinkButton href={seasonal ? campaignHref(campaign.slug) : '/categorias'} variant="outline"
-          className="group h-auto min-h-10 max-w-full gap-2 rounded-full border-foreground/20 bg-background/80 px-5 py-3 text-center text-xs whitespace-normal tracking-[0.14em] uppercase hover:border-primary hover:bg-primary hover:text-primary-foreground">
+        <LinkButton href={seasonal ? campaignHref(campaign.slug) : '/categorias'} variant="default"
+          className="group h-auto min-h-10 max-w-full gap-2 rounded-full border-primary bg-background/80 px-5 py-3 text-center text-xs text-primary whitespace-normal tracking-[0.14em] uppercase transition-colors duration-200 hover:border-primary hover:bg-primary hover:text-primary-foreground focus-visible:border-primary focus-visible:bg-primary focus-visible:text-primary-foreground active:border-primary active:bg-primary active:text-primary-foreground">
           <span className="min-w-0 [overflow-wrap:anywhere]">{seasonal ? campaign.button_text : 'Explorar catálogo'}</span><ArrowRight className="size-3.5 shrink-0" aria-hidden="true" />
         </LinkButton>
       </div>
