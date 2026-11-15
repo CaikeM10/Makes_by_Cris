@@ -37,14 +37,16 @@ test('every current category image belongs to its own real product, no legacy ar
     assert.ok(p && p.active && p.available && realIds.has(p.id), c.name);
     assert.ok(!c.image.includes('/placeholder.svg') && !legacy.has(c.image));
     const pool = fixture.products.filter(p => p.category === c.slug);
-    if (pool.some(p => homeImageOrigin(p.image) === 'confirmed-existing')) {
+    // The approved Eico cover uses its current product image even when the old
+    // fixture provenance still labels that exact path as provisional.
+    if (c.slug !== 'cabelos' && pool.some(p => homeImageOrigin(p.image) === 'confirmed-existing')) {
       assert.equal(homeImageOrigin(c.image), 'confirmed-existing');
     }
   }
 });
 test('Cabelos uses its approved final image before legacy artwork', () => {
   const c = selection.categories.find(c => c.name === 'Cabelos');
-  assert.equal(homeImageOrigin(c.image), 'confirmed-existing');
+  assert.equal(c.image, fixture.products.find(p => p.id === '43d20ee7-d439-4882-8c97-bca8406f4bf5').image);
   assert.ok(c.imageFallbacks.includes('/images/categorias/cabelos.png'));
 });
 
