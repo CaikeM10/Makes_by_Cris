@@ -1,6 +1,7 @@
 import type { PublicCatalog } from "./public-catalog";
 import type { Category } from "@/lib/types";
 import type { PublicProduct } from "./mappers";
+import { storefrontCategory } from "./category-placement";
 
 export function getAvailablePublicProducts(catalog: PublicCatalog) {
   const active = new Set(catalog.categories.filter(c => c.active).map(c => c.slug));
@@ -15,5 +16,5 @@ export function isRealCatalogProduct(p: { id: string; name: string }) {
 }
 
 export function getPublicCategoryCounts(products: PublicProduct[], categories: Category[]) {
-  return Object.fromEntries(categories.map(c => [c.slug, products.filter(p => p.category === c.slug).length]));
+  return Object.fromEntries(categories.map(c => [c.slug, products.filter(p => storefrontCategory(p) === c.slug).length]));
 }

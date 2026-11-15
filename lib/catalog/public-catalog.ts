@@ -1,6 +1,7 @@
 import type { Category } from "@/lib/types";
 import type { PublicProduct } from "./mappers";
 import { normalizeText } from "@/lib/format";
+import { storefrontCategory } from "./category-placement";
 
 export type PublicCatalog = { products: PublicProduct[]; categories: Category[] };
 
@@ -15,7 +16,7 @@ export function selectPublicCatalog(snapshot: PublicCatalog) {
     products, categories, getCategoryBySlug, getCategoryName,
     getProductBySlug: (slug: string) => products.find(p => p.slug === slug),
     getProductById: (id: string) => products.find(p => p.id === id),
-    getProductsByCategory: (slug: string) => products.filter(p => p.category === slug),
+    getProductsByCategory: (slug: string) => products.filter(p => storefrontCategory(p) === slug),
     featuredProducts: products.filter(p => p.featured),
     bestSellers: products.filter(p => p.bestSeller),
     giftProducts: products.filter(p => p.giftSection && p.available),
@@ -32,9 +33,11 @@ export function selectPublicCatalog(snapshot: PublicCatalog) {
       const term = normalizeText(query);
       if (!term) return [];
       return products.flatMap(product => {
+        const placement = storefrontCategory(product);
         const fields = {
           name: normalizeText(product.name),
-          category: normalizeText(`${getCategoryName(product.category)} ${product.category}`),
+          category: placement === null && product.category === "perfumes-masculinos"
+            ? "" : normalizeText(`${getCategoryName(product.category)} ${product.category}`),
           brand: normalizeText(product.brand),
           short: normalizeText(product.shortDescription),
           extra: normalizeText(`${product.description ?? ""} ${product.keywords.join(" ")}`),

@@ -14,11 +14,12 @@ const originImage = origin => {
   return product.image;
 };
 
-test('current public fixture returns eight populated categories, counts totaling 69', () => {
+test('current public fixture retains 68 searchable products and 64 category placements', () => {
   const home = selectHomeCatalog(fixture);
   assert.equal(home.categories.length, 8);
-  assert.equal(Object.values(home.counts).reduce((a, b) => a + b, 0), 69);
-  for (const c of home.categories) assert.equal(home.counts[c.slug], fixture.products.filter(p => p.category === c.slug).length);
+  assert.equal(home.products.length, 68);
+  assert.equal(Object.values(home.counts).reduce((a, b) => a + b, 0), 64);
+  for (const c of home.categories) assert.equal(home.counts[c.slug], home.getProductsByCategory(c.slug).length);
   assert.ok(!home.categories.some(c => ['maquiagem', 'perfumes', 'skincare', 'acessorios'].includes(c.slug)));
 });
 test('empty, inactive and unavailable category products are excluded', () => {

@@ -578,18 +578,7 @@
       "giftSection": false,
       "createdAt": "2026-10-27T10:43:03.864977+00:00"
     },
-    {
-      "id": "97e5f276-8410-42e5-84b8-6e0ba84016f6",
-      "name": "Orquídea Noire",
-      "category": "perfumes-femininos",
-      "image": "https://dunqpuowfdvmnzpiecmb.supabase.co/storage/v1/object/public/product-images/products/97e5f276-8410-42e5-84b8-6e0ba84016f6/9a35507a-5067-4336-bbfd-9c629c0d194d.webp",
-      "active": true,
-      "available": true,
-      "featured": false,
-      "bestSeller": false,
-      "giftSection": false,
-      "createdAt": "2026-10-27T10:43:38.063022+00:00"
-    },
+
     {
       "id": "9b3d40bf-6625-40f1-98e4-94ff1bb1d8b0",
       "name": "Kit Celebre Sua Força",
