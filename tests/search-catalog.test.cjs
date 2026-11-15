@@ -13,9 +13,9 @@ const search=selectSearchCatalog(home);
 const normalize=value=>value.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
 const realIds=new Set(products.map(p=>p.id));
 
-test('all 69 actual public products and eight populated categories are searchable',()=>{
- assert.equal(search.products.length,69);assert.equal(search.categories.length,8);
- assert.equal(Object.values(search.counts).reduce((a,b)=>a+b,0),69);
+test('all 68 actual public products and eight populated categories are searchable',()=>{
+ assert.equal(search.products.length,68);assert.equal(search.categories.length,8);
+ assert.equal(Object.values(search.counts).reduce((a,b)=>a+b,0),64); // Four products remain searchable outside category listings.
  assert.ok(search.products.every(p=>p.active&&p.available&&realIds.has(p.id)));
 });
 test('categories reuse the exact Home objects, images, slugs and counts',()=>{

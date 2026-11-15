@@ -418,17 +418,7 @@
       "price": 110,
       "credit_price": 122.9
     },
-    {
-      "id": "97e5f276-8410-42e5-84b8-6e0ba84016f6",
-      "name": "Orquídea Noire",
-      "brand": null,
-      "category_id": "real-perfumes-femininos",
-      "active": false,
-      "featured": false,
-      "best_seller": false,
-      "price": 59.9,
-      "credit_price": null
-    },
+
     {
       "id": "9b3d40bf-6625-40f1-98e4-94ff1bb1d8b0",
       "name": "Kit Celebre Sua Força",

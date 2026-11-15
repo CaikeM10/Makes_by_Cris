@@ -5,6 +5,7 @@ import { normalizeText } from "@/lib/format";
 import { resolveProductImage } from "./product-image";
 import imageOrigins from "./home-image-origins.json";
 import { getAvailablePublicProducts, getPublicCategoryCounts } from "./public-products";
+import { storefrontCategory } from "./category-placement";
 
 const SECTION_SIZE = 4;
 const originRanks: Record<string, number> = {
@@ -30,7 +31,7 @@ function compareProducts(a: PublicProduct, b: PublicProduct) {
 }
 
 export function getPublicCategoriesWithProducts(catalog: PublicCatalog) {
-  const populated = new Set(getAvailablePublicProducts(catalog).map(p => p.category));
+  const populated = new Set(getAvailablePublicProducts(catalog).map(storefrontCategory));
   return catalog.categories.filter(c => c.active && populated.has(c.slug));
 }
 
@@ -55,7 +56,7 @@ export function selectHomeCatalog(catalog: PublicCatalog, validCategoryImages: R
   const categories = getPublicCategoriesWithProducts(catalog);
   const counts = getPublicCategoryCounts(products, categories);
   const categoryCards = categories.map(category => {
-    const candidates = products.filter(p => p.category === category.slug && p.image).sort(compareProducts);
+    const candidates = products.filter(p => storefrontCategory(p) === category.slug && p.image).sort(compareProducts);
     const own = resolveProductImage(category.image || "");
     // Home and /categorias share this order. Legacy illustrations must never
     // outrank an actual product image, even when that image is provisional.
@@ -63,6 +64,8 @@ export function selectHomeCatalog(catalog: PublicCatalog, validCategoryImages: R
     const legacyArtwork = legacyCategoryArtwork.has(own);
     const ownValid = validCategoryImages.has(own);
     const images = [
+      ...(category.slug === "perfumes-masculinos"
+        ? candidates.filter(p => p.id === "c9fb50bf-90f2-4173-bb14-31763f26da83").map(p => resolveProductImage(p.image)) : []),
       ...(ownValid && !legacyArtwork ? [own] : []),
       ...candidates.filter(p => homeImageOrigin(p.image) !== "generated-provisional").map(p => resolveProductImage(p.image)),
       ...candidates.filter(p => homeImageOrigin(p.image) === "generated-provisional").map(p => resolveProductImage(p.image)),
@@ -87,7 +90,7 @@ export function selectHomeCatalog(catalog: PublicCatalog, validCategoryImages: R
     selected.length === SECTION_SIZE ? selected : [...selected, ...diverseSelection(pool, new Set(selected.map(p => p.id)), priority)].slice(0, SECTION_SIZE);
   return { products, categories: categoryCards, counts, latest,
     getCategoryBySlug: (slug: string) => categoryCards.find(c => c.slug === slug),
-    getProductsByCategory: (slug: string) => products.filter(p => p.category === slug),
+    getProductsByCategory: (slug: string) => products.filter(p => storefrontCategory(p) === slug),
     highlights: fill(highlights, products, p => p.featured),
     preferred: fill(preferred, products, p => p.bestSeller),
     gifts: fill(gifts, giftPool, p => p.giftSection) };
