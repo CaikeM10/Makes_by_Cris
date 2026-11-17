@@ -1,11 +1,9 @@
+import { pageMetadata } from "@/lib/seo";
 import type { Metadata } from 'next'
 import { CategoryCard } from '@/components/category-card'
 import { getHomeCatalog } from '@/lib/catalog/home-server'
 
-export const metadata: Metadata = {
-  title: 'Categorias',
-  description: 'Explore as categorias e descubra os produtos disponíveis no catálogo.',
-}
+export const metadata: Metadata = pageMetadata('Categorias', 'Explore as categorias e descubra os produtos disponíveis no catálogo.', '/categorias')
 
 export default async function CategoriasPage() {
   const { categories, counts } = await getHomeCatalog()

@@ -3,6 +3,7 @@ import type { Metadata, Viewport } from "next";
 import { Manrope, Cormorant_Garamond } from "next/font/google";
 
 import { Toaster } from "@/components/ui/sonner";
+import { getSiteUrl } from "@/lib/admin/site-url";
 import { storeConfig } from "@/lib/store-config";
 
 import "./globals.css";
@@ -22,9 +23,10 @@ const cormorant = Cormorant_Garamond({
 });
 
 export const metadata: Metadata = {
+  metadataBase: getSiteUrl() ? new URL(getSiteUrl()!) : undefined,
   title: {
     default: `${storeConfig.name} — ${storeConfig.tagline}`,
-    template: `%s · ${storeConfig.name}`,
+    template: `%s | ${storeConfig.name}`,
   },
 
   description: storeConfig.description,
@@ -36,6 +38,8 @@ export const metadata: Metadata = {
     locale: "pt_BR",
     siteName: storeConfig.name,
   },
+
+  twitter: { card: "summary", title: storeConfig.name, description: storeConfig.description },
 
   icons: {
     icon: [

@@ -1,3 +1,8 @@
+import { pageMetadata, canonicalUrl, serializeJsonLd } from "@/lib/seo";
+import { storeConfig } from "@/lib/store-config";
+
+export const metadata = { ...pageMetadata(storeConfig.name, storeConfig.description, "/"), title: { absolute: `${storeConfig.name} — ${storeConfig.tagline}` } };
+
 import { HomeHero } from "@/components/home-hero";
 import { getHomeCampaign } from "@/lib/campaigns/public-server";
 
@@ -13,6 +18,7 @@ export default async function HomePage() {
   return (
     <div className="flex flex-col gap-11 pb-14 sm:gap-14 lg:gap-20 lg:pb-24">
       <HomeHero campaign={campaign} />
+      {canonicalUrl("/") && <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: serializeJsonLd({ "@context": "https://schema.org", "@type": "Organization", name: storeConfig.name, url: canonicalUrl("/") }) }} />}
 
       {/* Categorias */}
       <section className="container-boutique flex flex-col gap-7">

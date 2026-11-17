@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { SafeImage } from "@/components/safe-image";
 import { resolveProductImage } from "@/lib/catalog/product-image";
+import { showFullProductImage } from "@/lib/catalog/product-image-framing";
 import { AddToBagButton } from "@/components/add-to-bag-button";
 import { FavoriteButton } from "@/components/favorite-button";
 import { formatCurrency } from "@/lib/format";
@@ -19,7 +20,9 @@ export function ProductCard({ product }: { product: Product }) {
           <SafeImage
             src={resolveProductImage(product.image) || "/placeholder.svg"}
             alt={product.name}
-            className="aspect-square w-full object-cover transition-transform duration-500 group-hover:scale-[1.04]"
+            className={showFullProductImage(product.id)
+              ? "aspect-square w-full object-contain"
+              : "aspect-square w-full object-cover transition-transform duration-500 group-hover:scale-[1.04]"}
           />
         </Link>
 

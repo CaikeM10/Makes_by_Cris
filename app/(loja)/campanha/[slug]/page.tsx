@@ -1,3 +1,4 @@
+import { pageMetadata } from "@/lib/seo";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getPublicCampaign } from "@/lib/campaigns/public-server";
@@ -8,7 +9,7 @@ type Props = { params: Promise<{ slug: string }> };
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const selection = await getPublicCampaign(slug);
-  return selection ? { title: selection.campaign.title, description: selection.campaign.description } : { title: 'Campanha não encontrada', robots: { index: false } };
+  return selection ? pageMetadata(selection.campaign.title, selection.campaign.description, `/campanha/${encodeURIComponent(selection.campaign.slug)}`) : { title: 'Campanha não encontrada', robots: { index: false } };
 }
 export default async function CampaignPage({ params }: Props) {
   const { slug } = await params;

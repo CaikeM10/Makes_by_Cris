@@ -1,3 +1,4 @@
+import { pageMetadata, productJsonLd, serializeJsonLd } from "@/lib/seo";
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
@@ -8,6 +9,7 @@ import { ProductPurchase } from '@/components/product-purchase'
 import { SectionHeading } from '@/components/section-heading'
 import { getPublicCatalog } from '@/lib/catalog/public-server'
 import { formatCurrency } from '@/lib/format'
+import { showFullProductImage } from '@/lib/catalog/product-image-framing'
 
 type PageProps = { params: Promise<{ slug: string }> }
 
@@ -15,13 +17,9 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const { getProductBySlug } = await getPublicCatalog()
   const { slug } = await params
   const product = getProductBySlug(slug)
-  if (!product) return { title: 'Produto não encontrado' }
+  if (!product) return { title: 'Produto não encontrado', robots: { index: false } }
 
-  return {
-    title: product.name,
-    description: product.shortDescription ?? undefined,
-    openGraph: { images: [product.image] },
-  }
+  return pageMetadata(product.name, product.shortDescription || product.description, `/produto/${encodeURIComponent(product.slug)}`, product.image)
 }
 
 export default async function ProdutoPage({ params }: PageProps) {
@@ -38,6 +36,7 @@ export default async function ProdutoPage({ params }: PageProps) {
 
   return (
     <div className="flex flex-col gap-16 pb-16 lg:gap-24 lg:pb-24">
+      {productJsonLd(product) && <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: serializeJsonLd(productJsonLd(product)) }} />}
       <div className="container-boutique pt-6 lg:pt-10">
         <nav aria-label="Você está aqui" className="flex flex-wrap items-center gap-1 text-xs">
           <Link href="/" className="text-muted-foreground hover:text-primary">
@@ -59,7 +58,10 @@ export default async function ProdutoPage({ params }: PageProps) {
             <img
               src={product.image || '/placeholder.svg'}
               alt={product.name}
-              className="aspect-square w-full object-cover"
+              width={1024}
+              height={1024}
+              fetchPriority="high"
+              className={showFullProductImage(product.id) ? "aspect-square w-full object-contain" : "aspect-square w-full object-cover"}
             />
             <FavoriteButton
               productId={product.id}
