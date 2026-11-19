@@ -3,6 +3,7 @@ import { CatalogLink } from "@/components/admin/catalog-link";
 import Link from "next/link";
 import { readAdminCatalogSummary } from "@/lib/catalog/admin-summary";
 import { listCampaigns } from "@/lib/campaigns/repository";
+import { AnalyticsPanel } from "@/components/admin/analytics-panel";
 
 export default async function AdminHome() {
   // Verificar também junto ao conteúdo, sem depender apenas do layout.
@@ -27,6 +28,7 @@ export default async function AdminHome() {
         <p className="admin-help admin-summary-help">O total inclui produtos desativados. As categorias contam produtos públicos disponíveis.</p>
       </> : <p className="admin-message" role="status">Não foi possível carregar o resumo do catálogo. <Link href="/admin" className="admin-summary-retry">Tentar novamente</Link></p>}
     </section>
+    <AnalyticsPanel />
     <section className="admin-attention" aria-labelledby="home-campaign-title">
       <p className="admin-eyebrow">Campanha da Home</p><h2 id="home-campaign-title">{activeCampaign?.name || (campaignsLoaded ? 'Nenhuma campanha ativa.' : 'Campanhas indisponíveis no momento.')}</h2>
       {activeCampaign ? <><p className="admin-help">ATIVA · {activeCampaign.productIds.length} produtos selecionados</p><Link href={`/admin/campanhas/${activeCampaign.id}/editar`}>Editar campanha</Link></>

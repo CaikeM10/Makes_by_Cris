@@ -1,3 +1,14 @@
+.admin-analytics { max-width: 64rem; margin-top: 2rem; display: grid; gap: 1rem; min-width: 0; }
+.admin-analytics-header { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; }
+.admin-analytics h2 { font-family: var(--font-cormorant), Georgia, serif; font-size: 2rem; }
+.admin-analytics h3 { font-size: 1rem; font-weight: 600; margin-bottom: .75rem; }
+.admin-analytics-block { min-width: 0; border: 1px solid #e0cdd1; border-radius: 1rem; background: #fffdfc; padding: clamp(.75rem, 2vw, 1.5rem); }
+.admin-analytics table { width: 100%; table-layout: fixed; border-collapse: collapse; font-size: .75rem; }
+.admin-analytics th, .admin-analytics td { padding: .75rem .25rem; border-bottom: 1px solid #e0cdd1; overflow-wrap: anywhere; text-align: right; }
+.admin-analytics th:first-child { width: 46%; text-align: left; }
+.admin-analytics tbody th { font-weight: 400; }
+.admin-traffic-chart { width: 100%; height: auto; min-height: 100px; }
+.admin-analytics-skeleton > div { min-height: 7rem; background: #f4e8eb; color: #68555c; }
 .admin-root {
   --admin-wine: #743b4b;
   --admin-muted: #68555c;

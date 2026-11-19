@@ -1,3 +1,4 @@
+import { pageMetadata } from "@/lib/seo";
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
@@ -12,9 +13,9 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const { getCategoryBySlug } = await getHomeCatalog()
   const { slug } = await params
   const category = getCategoryBySlug(slug)
-  if (!category) return { title: 'Categoria não encontrada' }
+  if (!category) return { title: 'Categoria não encontrada', robots: { index: false } }
 
-  return { title: category.name, description: category.description }
+  return pageMetadata(category.name, category.description, `/categoria/${encodeURIComponent(category.slug)}`, category.image)
 }
 
 export default async function CategoriaPage({ params }: PageProps) {

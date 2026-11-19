@@ -24,6 +24,7 @@ export default function ContaPage() {
   return (
     <div className="container-boutique flex flex-col gap-10 py-10 lg:py-14">
       <header className="flex flex-col items-start gap-4 rounded-3xl bg-secondary p-7">
+        <h1 className="sr-only">Conta e atendimento</h1>
         <BrandLogo size="md" />
         <p className="max-w-prose text-sm leading-relaxed text-secondary-foreground/80">
           {storeConfig.description}
