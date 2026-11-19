@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import { resolveProductImage, validateProductImage } from "@/lib/catalog/product-image";
 
-export function ProductImageField({ image, name, pending, error }: { image?: string; name?: string; pending: boolean; error?: string }) {
+export function ProductImageField({ image, name, pending, error, required }: { image?: string; name?: string; pending: boolean; error?: string; required: boolean }) {
   const [file, setFile] = useState<File | null>(null);
   const [preview, setPreview] = useState("");
   const [localError, setLocalError] = useState<string>();
@@ -16,9 +16,9 @@ export function ProductImageField({ image, name, pending, error }: { image?: str
   return <aside className="catalog-panel catalog-preview"><h2>Imagem principal</h2>
     <img src={preview || resolveProductImage(image || "/placeholder.svg")} alt={name || "Prévia do produto"} width={320} height={320} />
     <div className="admin-field"><label htmlFor="image">{image ? "Alterar foto" : "Escolher foto"}</label>
-      <input id="image" name="image" type="file" accept="image/jpeg,image/png,image/webp" required={!image} disabled={pending} aria-invalid={!!message} aria-describedby="image-help image-error" onChange={event => {
+      <input id="image" name="image" type="file" accept="image/jpeg,image/png,image/webp" required={required} disabled={pending} aria-invalid={!!message} aria-describedby="image-help image-error" onChange={event => {
         const selected = event.target.files?.[0] ?? null;
-        const invalid = validateProductImage(selected, !image);
+        const invalid = validateProductImage(selected, required);
         setLocalError(invalid);
         if (invalid) { event.target.value = ""; setFile(null); } else setFile(selected);
       }} />
