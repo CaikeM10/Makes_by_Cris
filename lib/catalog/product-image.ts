@@ -2,6 +2,13 @@ export const PRODUCT_IMAGE_BUCKET = "product-images";
 export const MAX_PRODUCT_IMAGE_SIZE = 5 * 1024 * 1024;
 export const IMAGE_EXTENSIONS: Record<string, string> = { "image/jpeg": "jpg", "image/png": "png", "image/webp": "webp" };
 
+/** Browsers and form parsers can represent an unselected file as an empty File. */
+export function normalizeProductImage(value: FormDataEntryValue | null): File | null {
+  if (!(value instanceof File)) return null;
+  if (value.size === 0 && (value.type === "" || value.type === "application/octet-stream")) return null;
+  return value;
+}
+
 /** Managed uploads use UUID names; imported objects may use lowercase SHA-256 names.
  * Keep the namespace, product ID, filename and extensions strictly bounded.
  */

@@ -95,6 +95,9 @@ test('colisão prévia e corrida no INSERT usam sufixos sem sobrescrever', async
   assert.equal(f.calls.filter(c => c[0] === 'upload').length, 1);
 });
 test('MIME e limite inclusivo de 5 MiB são validados', () => {
+  assert.equal(images.validateProductImage(null, false), undefined);
+  assert.ok(images.validateProductImage(null, true));
+  assert.ok(images.validateProductImage(images.normalizeProductImage(new File([], 'vazio.png', { type: 'image/png' })), false));
   for (const type of ['image/jpeg', 'image/png', 'image/webp']) assert.equal(images.validateProductImage({ type, size: 5242880 }), undefined);
   for (const type of ['image/svg+xml', 'text/plain', 'image/gif', 'toString']) assert.ok(images.validateProductImage({ type, size: 12 }));
   assert.ok(images.validateProductImage({ type: 'image/png', size: 5242881 }));
@@ -136,14 +139,34 @@ test('substituição confirma banco antes de remover a imagem anterior', async (
   assert.equal(f.calls.at(-1)[1], oldPath);
 });
 test('edição sem imagem preserva referência; imagem local ou de outro produto nunca é removida', async () => {
-  const f = fixture(); await f.save(valid, null, identity);
-  assert.equal(f.calls.find(c => c[0] === 'update')[3].image, undefined);
+  const f = fixture(); assert.equal((await f.save({ ...valid, price: '109,90', description: 'Descrição alterada' }, null, identity)).id, identity.id);
+  const patch = f.calls.find(c => c[0] === 'update')[3];
+  assert.equal(patch.price, '109.90'); assert.equal(patch.description, 'Descrição alterada');
+  assert.equal(Object.hasOwn(patch, 'image'), false);
   assert.equal(f.calls.some(c => c[0] === 'upload' || c[0] === 'remove'), false);
   for (const old of ['/products/local.webp', `products/other/${uuid}.png`]) {
     const f = fixture({ repo: { get: async () => ({ image: old, updated_at: version }) } });
     assert.ok((await f.save(valid, image(), identity)).id);
     assert.equal(f.calls.some(c => c[0] === 'remove'), false);
   }
+});
+test('action normaliza ausência e placeholders, preservando arquivos selecionados', async () => {
+  const received = [];
+  const actions = load('app/admin/(protected)/produtos/actions.ts', {
+    '@/lib/admin/auth': { requireAdmin: async () => ({ supabase: {} }) },
+    '@/lib/catalog/supabase-repository': { createCatalogRepository: () => ({}) },
+    '@/lib/catalog/product-storage': { createProductStorage: () => ({}) },
+    '@/lib/catalog/save-product': { saveCatalogProduct: async (_repo, _storage, _input, file) => { received.push(file); return { id: 'p-01' }; } },
+    'next/cache': { revalidatePath() {} },
+    'next/navigation': { redirect: url => { throw Error(url); } },
+  });
+  for (const value of [null, new File([], '', { type: 'application/octet-stream' }), new File([], 'undefined', { type: 'application/octet-stream' }), new File([], 'placeholder', { type: '' }), image(), new File([], 'vazio.png', { type: 'image/png' })]) {
+    const form = new FormData(); if (value) form.set('image', value);
+    await assert.rejects(actions.saveProduct('p-01', version, {}, form), /salvo=1/);
+  }
+  for (const file of received.slice(0, 4)) assert.equal(file, null);
+  assert.ok(received[4] instanceof File); assert.equal(received[4].size, image().size);
+  assert.ok(received[5] instanceof File); assert.equal(received[5].size, 0);
 });
 test('falha ou conflito no UPDATE limpa imagem nova e conserva antiga', async () => {
   for (const update of [async () => false, async () => { throw Error('failure'); }]) {
@@ -252,9 +275,9 @@ test('formulário compartilhado renderiza cadastro e edição com seleção de i
   }
   const edited = renderToString(React.createElement(ProductForm, { categories, product: { ...valid, image: '/products/legacy.webp', id: 'p-01', updated_at: version } }));
   assert.match(edited, /Alterar foto/); assert.match(edited, /Salvar alterações/); assert.match(edited, /src="\/products\/legacy.webp"/);
-  assert.doesNotMatch(edited.match(/<input[^>]*name="image"[^>]*>/)[0], /required=/);
+  assert.doesNotMatch(edited.match(/<input[^>]*id="image"[^>]*>/)[0], /required=|name=/);
   const unknown = renderToString(React.createElement(ProductForm, { categories: [{ ...categories[0], active: false }], product: { ...valid, brand: null, short_description: null, description: null, active: false, id: 'reserved-id', updated_at: version } }));
-  assert.doesNotMatch(unknown.match(/<input[^>]*name="image"[^>]*>/)[0], /required=/);
+  assert.doesNotMatch(unknown.match(/<input[^>]*id="image"[^>]*>/)[0], /required=|name=/);
   assert.match(unknown.replace(/<!--.*?-->/g, ''), /Maquiagem \(inativa\)/);
   assert.match(unknown.match(/<input[^>]*name="brand"[^>]*>/)[0], /value=""/);
   assert.doesNotMatch(unknown.replace(/<script>[\s\S]*?<\/script>/g, ''), /null|undefined/);
