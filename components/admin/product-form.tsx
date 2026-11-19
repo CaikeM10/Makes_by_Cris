@@ -4,7 +4,7 @@ import Link from "next/link";
 import type { AdminProduct, CatalogCategory } from "@/lib/catalog/repository";
 import { productFields, publicationFields, validateProduct } from "@/lib/catalog/validation";
 import { saveProduct, createProduct } from "@/app/admin/(protected)/produtos/actions";
-import { validateProductImage } from "@/lib/catalog/product-image";
+import { normalizeProductImage, validateProductImage } from "@/lib/catalog/product-image";
 import { ProductImageField } from "./product-image-field";
 import { ProductPriceFields } from "./product-price-fields";
 import { ProductPublicationFields } from "./product-publication-fields";
@@ -27,8 +27,7 @@ export function ProductForm({ product: existing, categories }: { product?: Admin
     const input: Record<string, unknown> = Object.fromEntries(form);
     for (const key of Object.keys(publicationFields)) input[key] = form.get(key) === "on";
     const result = validateProduct(input);
-    const image = form.get("image");
-    const imageError = validateProductImage(image instanceof File && (image.size > 0 || image.name !== "") ? image : null, !existing);
+    const imageError = validateProductImage(normalizeProductImage(form.get("image")), !existing);
     if (imageError) result.errors.image = imageError;
     setClientErrors(result.errors);
     if (pending || !result.data || imageError) { event.preventDefault(); const first = Object.keys(result.errors)[0]; event.currentTarget.querySelector<HTMLElement>(`[name="${first}"]`)?.focus(); }

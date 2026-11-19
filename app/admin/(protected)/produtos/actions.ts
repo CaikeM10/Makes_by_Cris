@@ -5,6 +5,7 @@ import type { ProductFormState } from "@/lib/catalog/update-product";
 import { saveCatalogProduct } from "@/lib/catalog/save-product";
 import { createProductStorage } from "@/lib/catalog/product-storage";
 import { publicationFields } from "@/lib/catalog/validation";
+import { normalizeProductImage } from "@/lib/catalog/product-image";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
@@ -20,8 +21,7 @@ async function persistProduct(form: FormData, identity?: { id: string; version: 
   const { supabase } = await requireAdmin();
   const input: Record<string, unknown> = Object.fromEntries(form);
   for (const key of Object.keys(publicationFields)) input[key] = form.get(key) === "on";
-  const image = form.get("image");
-  const file = image instanceof File && (image.size > 0 || image.name !== "") ? image : null;
+  const file = normalizeProductImage(form.get("image"));
   const result = await saveCatalogProduct(createCatalogRepository(supabase), createProductStorage(supabase), input, file, identity);
   if (result.error) return result;
   const id = result.id!;
