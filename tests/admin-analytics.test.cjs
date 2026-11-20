@@ -46,7 +46,7 @@ test('analytics: malformed, missing, negative and non-finite metrics fail instea
 const responseMock = { NextResponse: { json: (body, options) => ({ body, ...options }) } };
 test('analytics route: authorization runs before configuration and any private data access', async () => {
   for (const reason of ['/admin/login', '/admin/acesso-negado']) {
-    const route = load('app/admin/analytics/route.ts', {
+    const route = load('app/api/admin/analytics/route.ts', {
       'next/server': responseMock,
       '@/lib/admin/auth': { requireAdmin: async () => { throw Error(reason); } },
       '@/lib/admin/analytics': { analyticsConfigured: () => assert.fail('Auth first'), readAnalytics: () => assert.fail('Auth first') },
@@ -58,7 +58,7 @@ test('analytics route: authorization runs before configuration and any private d
 
 test('analytics route: missing credentials and upstream failure stay private without secret leakage', async () => {
   for (const configured of [false, true]) {
-    const route = load('app/admin/analytics/route.ts', {
+    const route = load('app/api/admin/analytics/route.ts', {
       'next/server': responseMock,
       '@/lib/admin/auth': { requireAdmin: async () => ({}) },
       '@/lib/admin/analytics': { analyticsConfigured: () => configured, readAnalytics: async () => { throw Error('Bearer secret-token private-body'); } },
@@ -72,7 +72,7 @@ test('analytics route: missing credentials and upstream failure stay private wit
 });
 
 test('analytics route resolves known slugs and preserves unknown routes without external lookups', async () => {
-  const route = load('app/admin/analytics/route.ts', {
+  const route = load('app/api/admin/analytics/route.ts', {
     'next/server': responseMock,
     '@/lib/admin/auth': { requireAdmin: async () => ({}) },
     '@/lib/admin/analytics': { analyticsConfigured: () => true, readAnalytics: async () => ({ products: [{ label: '/produto/conhecido', visitors: 2, pageviews: 3 }, { label: '/produto/removido', visitors: 1, pageviews: 2 }] }) },
@@ -81,4 +81,19 @@ test('analytics route resolves known slugs and preserves unknown routes without 
   const { body } = await route.GET();
   assert.equal(body.products[0].label, 'Nome real');
   assert.equal(body.products[1].label, '/produto/removido');
+});
+
+
+test('admin analytics UI uses the protected page, compact home and active navigation', () => {
+  const fs = require('node:fs');
+  const read = p => fs.readFileSync(p, 'utf8');
+  assert.match(read('app/admin/(protected)/layout.tsx'), /await requireAdmin\(\)/);
+  assert.match(read('app/admin/(protected)/analytics/page.tsx'), /<AnalyticsPanel \/>/);
+  assert.match(read('app/admin/(protected)/page.tsx'), /<AnalyticsPanel compact \/>/);
+  const panel = read('components/admin/analytics-panel.tsx');
+  assert.match(panel, /fetch\('\/api\/admin\/analytics'/);
+  assert.match(panel, /!compact && <><section/);
+  const nav = read('components/admin/admin-navigation.tsx');
+  assert.match(nav, /link\("\/admin\/analytics", "Analytics"\)/);
+  assert.match(nav, /aria-current=\{active \? "page"/);
 });

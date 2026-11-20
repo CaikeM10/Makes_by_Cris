@@ -20,18 +20,18 @@ export default async function AdminHome() {
     <section aria-label="Resumo do catálogo" className="admin-summary">
       {summary ? <>
         <dl className="admin-summary-grid">
-          <div><dt>Total de produtos</dt><dd>{summary.totalProducts}</dd></div>
-          <div><dt>Produtos ativos</dt><dd>{summary.activeProducts}</dd></div>
+          <div><dt><Link href="/admin/produtos">Total de produtos</Link></dt><dd>{summary.totalProducts}</dd></div>
+          <div><dt><Link href="/admin/produtos?filter=active">Produtos ativos</Link></dt><dd>{summary.activeProducts}</dd></div>
           <div><dt>Categorias com produtos</dt><dd>{summary.populatedCategories}</dd></div>
-          <div><dt>Imagens para revisar</dt><dd>{summary.provisionalImages}</dd></div>
+          <div><dt>{summary.provisionalImages > 0 ? <a href="#review-title">Imagens para revisar</a> : "Imagens para revisar"}</dt><dd>{summary.provisionalImages}</dd></div>
         </dl>
         <p className="admin-help admin-summary-help">O total inclui produtos desativados. As categorias contam produtos públicos disponíveis.</p>
       </> : <p className="admin-message" role="status">Não foi possível carregar o resumo do catálogo. <Link href="/admin" className="admin-summary-retry">Tentar novamente</Link></p>}
     </section>
-    <AnalyticsPanel />
+    <AnalyticsPanel compact />
     <section className="admin-attention" aria-labelledby="home-campaign-title">
       <p className="admin-eyebrow">Campanha da Home</p><h2 id="home-campaign-title">{activeCampaign?.name || (campaignsLoaded ? 'Nenhuma campanha ativa.' : 'Campanhas indisponíveis no momento.')}</h2>
-      {activeCampaign ? <><p className="admin-help">ATIVA · {activeCampaign.productIds.length} produtos selecionados</p><Link href={`/admin/campanhas/${activeCampaign.id}/editar`}>Editar campanha</Link></>
+      {activeCampaign ? <><p className="admin-help">ATIVA · {activeCampaign.productIds.length} produtos selecionados</p><Link href={`/admin/campanhas/${activeCampaign.id}/editar`}>Gerenciar campanha</Link></>
         : <><p className="admin-help">{campaignsLoaded ? 'O banner padrão está sendo exibido.' : 'Atualize a página e tente novamente.'}</p><Link href={campaignsLoaded ? '/admin/campanhas/nova' : '/admin/campanhas'}>{campaignsLoaded ? 'Criar campanha' : 'Ver campanhas'}</Link></>}
     </section>
     <section className="admin-home-note" aria-labelledby="next-step">

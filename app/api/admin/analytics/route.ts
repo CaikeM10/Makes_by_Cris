@@ -9,7 +9,7 @@ const headers = { 'Cache-Control': 'private, no-store', 'X-Robots-Tag': 'noindex
 export async function GET() {
   // Keep outside catch: Next auth redirects must never become successful responses.
   await requireAdmin();
-  if (!analyticsConfigured()) return NextResponse.json({ error: 'Analytics ainda não configurado. Consulte docs/admin/analytics.md.' }, { status: 503, headers });
+  if (!analyticsConfigured()) return NextResponse.json({ error: 'Analytics ainda não configurado. Configure a integração da Vercel para visualizar os acessos.' }, { status: 503, headers });
   try {
     const data = await readAnalytics();
     let products = data.products;
