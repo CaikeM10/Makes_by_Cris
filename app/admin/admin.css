@@ -149,6 +149,9 @@
 .catalog-preview input[type="file"] { height: auto; font-size: .8rem; padding: .75rem; }
 .catalog-preview input::file-selector-button { border: 0; border-radius: .5rem; padding: .5rem; margin-right: .5rem; background: #f8edee; color: var(--admin-wine); cursor: pointer; }
 .catalog-two-columns { display: grid; gap: 1.25rem; }
+.catalog-publication { display: grid; gap: 1.25rem; }
+.admin-form .catalog-publication-group { min-width: 0; border: 0; padding: 0; margin: 0; }
+.admin-form .catalog-publication-group + .catalog-publication-group { border-top: 1px solid #e0cdd1; padding-top: 1rem; }
 .catalog-checks { display: grid; gap: .5rem; }
 .catalog-checks label { display: flex; align-items: center; gap: .75rem; min-height: 2.75rem; font-size: .9rem; }
 .catalog-checks input { width: 1.2rem; height: 1.2rem; accent-color: var(--admin-wine); }

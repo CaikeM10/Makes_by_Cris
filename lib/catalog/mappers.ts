@@ -2,7 +2,7 @@ import type { AdminProduct, ProductRow } from "./repository";
 import type { Category, Product } from "@/lib/types";
 import { resolveProductImage } from "./product-image";
 
-export type PublicProduct = Product & { giftSection: boolean };
+export type PublicProduct = Product & { giftSection: boolean; newArrival: boolean };
 export type PublicProductRow = Omit<ProductRow, "updated_at" | "catalog_order">;
 const reviewedImages: Record<string, string> = {
   "478b60e0-586e-472d-a435-76079f851e3b": "/images/catalogo/presentes-femininos/kit-egeo-choc.png",
@@ -22,7 +22,7 @@ export function mapPublicProduct(row: PublicProductRow, category: Category): Pub
     price: Number(row.price), creditPrice: row.credit_price === null ? null : Number(row.credit_price),
     image: reviewedImages[row.id] ?? resolveProductImage(row.image), category: category.slug, brand: row.brand,
     keywords: row.keywords, variations: row.variations ?? undefined,
-    featured: row.featured, bestSeller: row.best_seller, giftSection: row.gift_section,
+    featured: row.featured, bestSeller: row.best_seller, giftSection: row.gift_section, newArrival: row.new_arrival,
     available: row.available, active: row.active, createdAt: row.created_at,
   };
 }

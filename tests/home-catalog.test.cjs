@@ -147,3 +147,29 @@ test('current catalog fixtures agree on all product images and confirm the 55 fi
   assert.equal(finalImages.length, 55);
   for (const row of finalImages) assert.equal(homeImageOrigin(row.path), 'confirmed-existing', row.id);
 });
+
+for (const marked of [0, 1, 2, 3, 4, 6]) {
+  test('Novidades prioritizes ' + marked + ' manual picks, fills by date and caps at four', () => {
+    const rows = Array.from({ length: 10 }, (_, i) => ({ ...p, id: 'p-' + i, createdAt: String(2000 + i), newArrival: i < marked }));
+    const expected = [...rows.slice(0, marked).reverse(), ...rows.slice(marked).reverse()].slice(0, 4).map(p => p.id);
+    const home = select(rows);
+    assert.deepEqual(Array.from(home.latest, p => p.id), expected);
+    assert.deepEqual(Array.from(select([...rows].reverse()).latest, p => p.id), expected);
+    assert.equal(new Set(home.latest.map(p => p.id)).size, 4);
+  });
+}
+test('Novidades excludes ineligible manual picks and deduplicates IDs with deterministic ties', () => {
+  const rows = ['c', 'a', 'b', 'd', 'e'].map(id => ({ ...p, id, newArrival: true, createdAt: '2026-01-01' }));
+  const home = select([...rows, rows[0], { ...rows[0], id: 'inactive', active: false },
+    { ...rows[0], id: 'unavailable', available: false }, { ...rows[0], id: 'hidden', category: 'hidden' }], [c, { ...c, slug: 'hidden', active: false }]);
+  assert.deepEqual(Array.from(home.latest, p => p.id), ['a', 'b', 'c', 'd']);
+});
+test('manual Novidades remains reserved before gifts, highlights and preferred', () => {
+  const rows = Array.from({ length: 20 }, (_, i) => ({ ...p, id: 'p-' + i, name: 'Product ' + i,
+    createdAt: String(2000 + i), newArrival: i < 4, giftSection: i === 4, featured: i === 8, bestSeller: i === 9 }));
+  const home = select(rows);
+  assert.ok(home.gifts.some(p => p.id === 'p-4'));
+  assert.ok(home.highlights.some(p => p.id === 'p-8'));
+  assert.ok(home.preferred.some(p => p.id === 'p-9'));
+  assert.equal(new Set(['latest', 'gifts', 'highlights', 'preferred'].flatMap(key => home[key].map(p => p.id))).size, 16);
+});
