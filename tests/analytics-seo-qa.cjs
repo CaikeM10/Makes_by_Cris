@@ -21,7 +21,7 @@ async function main() {
   const products = urls.filter(url => url.pathname.startsWith('/produto/')).slice(0, 3);
   assert.equal(products.length, 3);
   const category = urls.find(url => url.pathname.startsWith('/categoria/'));
-  for (const route of ['/admin', '/admin/analytics']) {
+  for (const route of ['/admin', '/admin/analytics', '/api/admin/analytics']) {
     const r = await fetch(base + route, { redirect: 'manual' });
     assert.equal(r.status, 307); assert.match(r.headers.get('location'), /\/admin\/login/);
   }
@@ -67,7 +67,7 @@ async function main() {
     const markup = {};
     for (const [state, values] of Object.entries(states)) {
       let index = 0;
-      const Component = load('components/admin/analytics-panel.tsx', { react: { ...React, useState: () => [values[index++], () => {}], useRef: () => ({ current: null }), useEffect: () => {}, useCallback: fn => fn } }).AnalyticsPanel;
+      const Component = load('components/admin/analytics-panel.tsx', { 'next/link': ({ href, children }) => React.createElement('a', { href }, children), react: { ...React, useState: () => [values[index++], () => {}], useRef: () => ({ current: null }), useEffect: () => {}, useCallback: fn => fn } }).AnalyticsPanel;
       markup[state] = '<!doctype html><html lang="pt-BR"><meta name="viewport" content="width=device-width, initial-scale=1"><style>' + css + '</style><div class="admin-root"><main class="admin-main">' + renderToStaticMarkup(React.createElement(Component)) + '</main></div></html>';
     }
     server = http.createServer((req, res) => { res.setHeader('Content-Type', 'text/html; charset=utf-8'); res.end(markup[req.url.slice(1)] || markup.success); });
