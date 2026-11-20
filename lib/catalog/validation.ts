@@ -6,7 +6,7 @@ export const productFields = {
   short_description: { label: "Descrição curta (opcional)", max: 500, required: false },
   description: { label: "Descrição completa (opcional)", max: 10000, required: false },
 } as const;
-export const publicationFields = { active: "Ativo", available: "Disponível", featured: "Destaques", best_seller: "Mais vendidos", gift_section: "Presentes & Kits" } as const;
+export const publicationFields = { active: "Ativo", available: "Disponível", featured: "Destaques da semana", best_seller: "Preferidos", gift_section: "Presentes & Kits", new_arrival: "Novidades" } as const;
 export function parseMoney(value: unknown): string | null {
   if (typeof value !== "string" || !/^\d{1,10}([.,]\d{1,2})?$/.test(value.trim())) return null;
   return Number(value.trim().replace(",", ".")).toFixed(2);

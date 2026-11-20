@@ -85,8 +85,17 @@ export function selectHomeCatalog(catalog: PublicCatalog, validCategoryImages: R
     return { ...category, image: images[0], imageFallbacks: [...new Set(images)].slice(1) };
   });
 
-  // Reserve newest products first so the working Novidades section is preserved.
-  const latest = [...products].sort((a, b) => b.createdAt.localeCompare(a.createdAt) || a.id.localeCompare(b.id)).slice(0, SECTION_SIZE);
+  // Reserve Novidades before other sections: manual picks first, then newest.
+  // Date and ID preserve the original fallback and deterministically break ties.
+  const latestIds = new Set<string>();
+  const latest = [...products].sort((a, b) =>
+    Number(b.newArrival === true) - Number(a.newArrival === true)
+    || b.createdAt.localeCompare(a.createdAt) || a.id.localeCompare(b.id)
+  ).filter(product => {
+    if (latestIds.has(product.id)) return false;
+    latestIds.add(product.id);
+    return true;
+  }).slice(0, SECTION_SIZE);
   const used = new Set(latest.map(p => p.id));
   const giftSlugs = new Set(categories.filter(c => /\bpresentes?\b/.test(normalizeText(c.name))).map(c => c.slug));
   const giftPool = products.filter(p => giftSlugs.has(p.category) || p.giftSection);

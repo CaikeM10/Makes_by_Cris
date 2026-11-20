@@ -22,7 +22,7 @@ function load(file, mocks = {}) {
 }
 const images = load('lib/catalog/product-image.ts');
 const { saveCatalogProduct, productSlug } = load('lib/catalog/save-product.ts');
-const valid = { name: 'Batom Vermelho', brand: 'Cris', category_id: 'cat-1', short_description: 'Batom', description: 'Descrição completa', price: '12,50', credit_price: '14,90', active: true, available: false, featured: true, best_seller: true, gift_section: true };
+const valid = { name: 'Batom Vermelho', brand: 'Cris', category_id: 'cat-1', short_description: 'Batom', description: 'Descrição completa', price: '12,50', credit_price: '14,90', active: true, available: false, featured: true, best_seller: true, new_arrival: false, gift_section: true };
 const uuid = '12345678-1234-4234-8234-123456789abc';
 const oldPath = `products/p-01/${uuid}.png`;
 const version = '2026-10-24T12:00:00.123456Z';
@@ -281,4 +281,49 @@ test('formulário compartilhado renderiza cadastro e edição com seleção de i
   assert.match(unknown.replace(/<!--.*?-->/g, ''), /Maquiagem \(inativa\)/);
   assert.match(unknown.match(/<input[^>]*name="brand"[^>]*>/)[0], /value=""/);
   assert.doesNotMatch(unknown.replace(/<script>[\s\S]*?<\/script>/g, ''), /null|undefined/);
+});
+
+test('new_arrival accepts booleans only and persists both values on create and edit without changing other flags', async () => {
+  const { validateProduct } = load('lib/catalog/validation.ts');
+  for (const value of ['true', undefined, null, 1]) assert.ok(validateProduct({ ...valid, new_arrival: value }).errors.new_arrival);
+  for (const new_arrival of [false, true]) {
+    const input = { ...valid, new_arrival };
+    assert.equal(validateProduct(input).data.new_arrival, new_arrival);
+    const created = fixture(); assert.equal((await created.save(input)).error, undefined);
+    const edited = fixture(); assert.equal((await edited.save(input, null, identity)).error, undefined);
+    for (const row of [created.calls.find(c => c[0] === 'insert')[1], edited.calls.find(c => c[0] === 'update')[3]]) {
+      for (const key of ['active', 'available', 'featured', 'best_seller', 'gift_section', 'new_arrival']) assert.equal(row[key], input[key]);
+    }
+  }
+});
+test('publication UI separates accessible groups and reflects persisted flags', () => {
+  const { renderToStaticMarkup } = require('react-dom/server');
+  const { ProductPublicationFields } = load('components/admin/product-publication-fields.tsx');
+  for (const checked of [false, true]) {
+    const product = { active: true, available: true, featured: checked, best_seller: checked, gift_section: checked, new_arrival: checked };
+    const html = renderToStaticMarkup(ProductPublicationFields({ product }));
+    assert.ok(html.includes('<legend>Publicação</legend>'));
+    assert.ok(html.includes('<legend>Seções da Home</legend>'));
+    for (const label of ['Destaques da semana', 'Preferidos', 'Novidades']) assert.ok(html.includes(label));
+    assert.doesNotMatch(html, /Mais vendidos/);
+    for (const [key, value] of Object.entries(product)) {
+      const input = html.match(new RegExp('<input[^>]*name="' + key + '"[^>]*>'))[0];
+      assert.equal(input.includes('checked=""'), value);
+    }
+  }
+});
+test('new product defaults keep publication enabled and all editorial sections disabled', () => {
+  const { ProductForm } = load('components/admin/product-form.tsx', {
+    react: { useActionState: () => [{}, () => {}, false], useEffect() {}, useRef: () => ({ current: false }), useState: () => [{}, () => {}] },
+    'next/link': { default: () => null }, '@/app/admin/(protected)/produtos/actions': {},
+  });
+  const tree = ProductForm({ categories: [] });
+  const find = node => {
+    if (!node || typeof node !== 'object') return;
+    if (node.type?.name === 'ProductPublicationFields') return node.props.product;
+    for (const child of [node.props?.children].flat(Infinity)) { const found = find(child); if (found) return found; }
+  };
+  const product = find(tree);
+  for (const key of ['active', 'available']) assert.equal(product[key], true);
+  for (const key of ['featured', 'best_seller', 'gift_section', 'new_arrival']) assert.equal(product[key], false);
 });

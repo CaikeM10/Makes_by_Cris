@@ -20,7 +20,7 @@ const { mapPublicProduct } = load('lib/catalog/mappers.ts');
 const { selectPublicCatalog } = load('lib/catalog/public-catalog.ts');
 const selection = load('lib/catalog/stored-selection.ts');
 const category = { id: 'cat-1', name: 'Maquiagem', slug: 'maquiagem', description: 'Beleza', image: '/cat.png', active: true };
-const row = { id: 'p-01', name: 'Batom Matte Vermelho Clássico', slug: 'batom-matte-vermelho-classico', short_description: 'Batom', description: 'Descrição', price: '9.90', credit_price: '42.90', image: '/batom.png', category_id: 'cat-1', brand: 'Cris', keywords: ['batom'], variations: ['Vermelho'], featured: true, best_seller: false, gift_section: true, active: true, available: true, created_at: '2026-07-28T00:00:00+00:00', updated_at: 'private-version' };
+const row = { id: 'p-01', name: 'Batom Matte Vermelho Clássico', slug: 'batom-matte-vermelho-classico', short_description: 'Batom', description: 'Descrição', price: '9.90', credit_price: '42.90', image: '/batom.png', category_id: 'cat-1', brand: 'Cris', keywords: ['batom'], variations: ['Vermelho'], featured: true, best_seller: false, new_arrival: false, gift_section: true, active: true, available: true, created_at: '2026-07-28T00:00:00+00:00', updated_at: 'private-version' };
 const product = mapPublicProduct(row, category);
 test('mapeamento público preserva IDs, slug, datas, arrays, categoria e preços independentes', () => {
   assert.equal(product.id, 'p-01'); assert.equal(product.slug, row.slug);
@@ -101,4 +101,14 @@ test('nenhum consumidor público importa dados estáticos e salvamento invalida 
     assert.doesNotMatch(fs.readFileSync(path.join(root, file), 'utf8'), /@\/lib\/data\/(products|categories)/, file);
   }
   assert.match(fs.readFileSync(path.join(root, 'app/admin/(protected)/produtos/actions.ts'), 'utf8'), /revalidatePath\("\/\(loja\)", "layout"\)/);
+});
+
+test('new_arrival travels through the explicit public selection and mapper', () => {
+  assert.ok(load('lib/catalog/public-repository.ts').PUBLIC_PRODUCT_COLUMNS.split(',').includes('new_arrival'));
+  for (const value of [false, true]) assert.equal(mapPublicProduct({ ...row, new_arrival: value }, category).newArrival, value);
+});
+test('new arrival migration is additive and defaults existing rows to false', () => {
+  const sql = fs.readFileSync(path.join(root, 'supabase/migrations/202611200001_product_new_arrival.sql'), 'utf8');
+  assert.match(sql, /add column if not exists new_arrival boolean not null default false/i);
+  assert.doesNotMatch(sql, /update |rename |drop |policy|storage|auth\./i);
 });

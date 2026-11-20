@@ -16,7 +16,7 @@ function load(file, mocks = {}) {
   return module.exports;
 }
 const validation = load('lib/catalog/validation.ts');
-const valid = { name: 'Kit Presente Completo', brand: 'Cris', category_id: 'cat-6', short_description: 'Presente', description: 'Descrição completa', price: '139,90', credit_price: '149,90', active: true, available: true, featured: false, best_seller: false, gift_section: true };
+const valid = { name: 'Kit Presente Completo', brand: 'Cris', category_id: 'cat-6', short_description: 'Presente', description: 'Descrição completa', price: '139,90', credit_price: '149,90', active: true, available: true, featured: false, best_seller: false, new_arrival: false, gift_section: true };
 const version = '2026-10-23T12:00:00.123456Z';
 test('validação central aceita preços independentes e rejeita valores ambíguos', () => {
   assert.equal(validation.validateProduct(valid).data.price, '139.90');
