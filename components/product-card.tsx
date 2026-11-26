@@ -1,3 +1,4 @@
+import { getProductPrice, hasSpecialCashPrice } from "@/lib/pricing";
 import Link from "next/link";
 import { SafeImage } from "@/components/safe-image";
 import { resolveProductImage } from "@/lib/catalog/product-image";
@@ -56,21 +57,22 @@ export function ProductCard({ product }: { product: Product }) {
         </p>}
 
         <div className="mt-auto flex items-end justify-between gap-2 pt-3">
-          <div className="flex flex-col">
+          <div className="min-w-0 flex flex-col">
             <span className="font-serif text-xl leading-none text-primary">
-              {formatCurrency(product.price)}
+              {formatCurrency(getProductPrice(product, "Dinheiro"))}
             </span>
 
             <span className="mt-1 text-[0.625rem] leading-tight text-muted-foreground">
-              à vista no PIX
+              {hasSpecialCashPrice(product) ? "em dinheiro" : "à vista no PIX"}
             </span>
 
+            {hasSpecialCashPrice(product) && <span className="mt-1 text-[0.625rem] leading-tight text-muted-foreground">{formatCurrency(product.price)} no PIX/débito</span>}
             {product.creditPrice !== null && <span className="mt-1 text-[0.625rem] leading-tight text-muted-foreground">
               {formatCurrency(product.creditPrice)} no crédito · até 6x
             </span>}
           </div>
 
-          <AddToBagButton product={product} variant="compact" />
+          <AddToBagButton product={product} variant="compact" className="shrink-0" />
         </div>
       </div>
     </article>

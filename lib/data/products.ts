@@ -11,6 +11,7 @@ export const products: Product[] = [
     description:
       "Um vermelho atemporal de altíssima pigmentação. A textura cremosa desliza sem pesar nos lábios e seca em um acabamento matte veludo de longa duração, com vitamina E para evitar a sensação de ressecamento.",
     price: 39.9,
+    cashPrice: null,
     creditPrice: 42.9,
     image: "/images/produtos/batom-matte-vermelho.png",
     category: "maquiagem",
@@ -31,6 +32,7 @@ export const products: Product[] = [
     description:
       "Base de textura fluida que se adapta à pele e oferece cobertura média a alta sem marcar linhas de expressão. Controla a oleosidade por até 12 horas e deixa um acabamento acetinado uniforme.",
     price: 89.9,
+    cashPrice: null,
     creditPrice: 95.9,
     image: "/images/produtos/base-fluida-alta-cobertura.png",
     category: "maquiagem",
@@ -51,6 +53,7 @@ export const products: Product[] = [
     description:
       "Paleta com doze tons neutros entre mattes, acetinados e cintilantes. A fórmula de alta pigmentação permite esfumar com facilidade e construir desde o olhar mais discreto até o mais marcante.",
     price: 129.9,
+    cashPrice: null,
     creditPrice: 139.9,
     image: "/images/produtos/paleta-de-sombras-nude.png",
     category: "maquiagem",
@@ -70,6 +73,7 @@ export const products: Product[] = [
     description:
       "Escova de cerdas curvas que separa e alonga cada fio. A fórmula à prova de umidade entrega volume desde a primeira camada e permanece intacta durante todo o dia.",
     price: 54.9,
+    cashPrice: null,
     creditPrice: 59.9,
     image: "/images/produtos/mascara-de-cilios-volume.png",
     category: "maquiagem",
@@ -89,6 +93,7 @@ export const products: Product[] = [
     description:
       "Blush compacto de textura sedosa que se mistura à pele com naturalidade. O tom pêssego ilumina o rosto e funciona em diferentes subtons, com fixação de longa duração.",
     price: 44.9,
+    cashPrice: null,
     creditPrice: 47.9,
     image: "/images/produtos/blush-compacto-pessego.png",
     category: "maquiagem",
@@ -108,6 +113,7 @@ export const products: Product[] = [
     description:
       "Eau de parfum floral construído sobre notas de peônia e jasmim, com fundo amadeirado de âmbar e musk. Uma assinatura feminina sofisticada com até 10 horas de fixação.",
     price: 189.9,
+    cashPrice: null,
     creditPrice: 204.9,
     image: "/images/produtos/perfume-floral-elegance.png",
     category: "perfumes",
@@ -128,6 +134,7 @@ export const products: Product[] = [
     description:
       "Composição oriental com abertura de bergamota, coração de íris e fundo profundo de âmbar, baunilha e patchouli. Presença marcante, ideal para eventos e noites especiais.",
     price: 249.9,
+    cashPrice: null,
     creditPrice: 269.9,
     image: "/images/produtos/eau-de-parfum-ambar-noir.png",
     category: "perfumes",
@@ -148,6 +155,7 @@ export const products: Product[] = [
     description:
       "Body splash de baunilha cremosa com toque de amêndoas. Refrescante e discreto, pode ser reaplicado ao longo do dia e combina perfeitamente com o creme corporal da mesma linha.",
     price: 59.9,
+    cashPrice: null,
     creditPrice: 64.9,
     image: "/images/produtos/body-splash-baunilha.png",
     category: "perfumes",
@@ -167,6 +175,7 @@ export const products: Product[] = [
     description:
       "Fragrância vibrante com limão siciliano, bergamota e notas verdes de chá branco. Leve e elegante, perfeita para o clima quente e para o uso diário.",
     price: 159.9,
+    cashPrice: null,
     creditPrice: 174.9,
     image: "/images/produtos/perfume-citrico-fresh.png",
     category: "perfumes",
@@ -186,6 +195,7 @@ export const products: Product[] = [
     description:
       "Blend de óleos de argan, macadâmia e coco que sela as cutículas, reduz o frizz e devolve brilho aos fios. Textura seca, absorção rápida e sem efeito pesado.",
     price: 74.9,
+    cashPrice: null,
     creditPrice: 79.9,
     image: "/images/produtos/oleo-capilar-reparador.png",
     category: "cabelos",
@@ -205,6 +215,7 @@ export const products: Product[] = [
     description:
       "Máscara de tratamento com manteiga de karité e proteínas da seda. Recupera fios secos e quimicamente tratados, deixando o cabelo macio e maleável desde a primeira aplicação.",
     price: 89.9,
+    cashPrice: null,
     creditPrice: 95.9,
     image: "/images/produtos/mascara-nutricao-intensa.png",
     category: "cabelos",
@@ -224,6 +235,7 @@ export const products: Product[] = [
     description:
       "Spray leve que protege os fios do secador, chapinha e babyliss. Facilita o desembaraço, controla o volume e não deixa resíduo.",
     price: 64.9,
+    cashPrice: null,
     creditPrice: 69.9,
     image: "/images/produtos/leave-in-protetor-termico.png",
     category: "cabelos",
@@ -243,6 +255,7 @@ export const products: Product[] = [
     description:
       "Sérum com 10% de vitamina C estabilizada e ácido ferúlico. Reduz manchas, ilumina o tom da pele e protege contra os radicais livres. Uso diário pela manhã, antes do protetor solar.",
     price: 119.9,
+    cashPrice: null,
     creditPrice: 129.9,
     image: "/images/produtos/serum-vitamina-c.png",
     category: "skincare",
@@ -262,6 +275,7 @@ export const products: Product[] = [
     description:
       "Gel-creme com três pesos moleculares de ácido hialurônico que hidratam em diferentes camadas da pele. Textura fresca, rápida absorção e ideal sob a maquiagem.",
     price: 99.9,
+    cashPrice: null,
     creditPrice: 109.9,
     image: "/images/produtos/hidratante-facial-acido-hialuronico.png",
     category: "skincare",
@@ -287,6 +301,7 @@ export const products: Product[] = [
     description:
       "Protetor solar facial FPS 50 com acabamento invisível e efeito matificante. Não deixa resíduo branco e pode ser usado como base para a maquiagem.",
     price: 84.9,
+    cashPrice: null,
     creditPrice: 92.9,
     image: "/images/produtos/protetor-solar-toque-seco.png",
     category: "skincare",
@@ -306,6 +321,7 @@ export const products: Product[] = [
     description:
       "Remove maquiagem, oleosidade e impurezas em um único passo, sem agredir a barreira cutânea. Fórmula sem perfume, indicada até para pele sensível.",
     price: 49.9,
+    cashPrice: null,
     creditPrice: 54.9,
     image: "/images/produtos/agua-micelar-suave.png",
     category: "skincare",
@@ -331,6 +347,7 @@ export const products: Product[] = [
     description:
       "Creme corporal denso com manteiga de karité e óleo de amêndoas. Restaura a maciez de pernas, braços e áreas mais secas, com perfume suave e envolvente.",
     price: 69.9,
+    cashPrice: null,
     creditPrice: 74.9,
     image: "/images/produtos/creme-corporal-karite.png",
     category: "corpo-e-banho",
@@ -350,6 +367,7 @@ export const products: Product[] = [
     description:
       "Sabonete líquido com extrato de rosas e glicerina vegetal. Limpa suavemente e mantém a pele hidratada, deixando um perfume floral discreto após o banho.",
     price: 42.9,
+    cashPrice: null,
     creditPrice: 46.9,
     image: "/images/produtos/sabonete-liquido-rosas.png",
     category: "corpo-e-banho",
@@ -369,6 +387,7 @@ export const products: Product[] = [
     description:
       "Kit com doze pincéis de cerdas sintéticas ultramacias para base, pó, blush, contorno e olhos. Cabos em rosé com virola dourada e estojo para transporte.",
     price: 179.9,
+    cashPrice: null,
     creditPrice: 194.9,
     image: "/images/produtos/kit-pinceis-profissional.png",
     category: "acessorios",
@@ -388,6 +407,7 @@ export const products: Product[] = [
     description:
       "Necessaire matelassê em cetim rosé com zíper dourado e forro impermeável. Tamanho ideal para viagens e para manter os essenciais sempre organizados.",
     price: 89.9,
+    cashPrice: null,
     creditPrice: 97.9,
     image: "/images/produtos/necessaire-rose.png",
     category: "acessorios",
@@ -407,6 +427,7 @@ export const products: Product[] = [
     description:
       "Kit presenteável com uma seleção de itens pensados para surpreender em datas especiais. Uma opção prática, elegante e pronta para transformar o presente em uma experiência completa.",
     price: 149.9,
+    cashPrice: null,
     creditPrice: 159.9,
     image: "/images/produtos/kit-presente-completo.png",
     category: "acessorios",
@@ -426,6 +447,7 @@ export const products: Product[] = [
     description:
       "Bolsa feminina em acabamento rosé com design elegante e versátil. Espaço interno organizado e tamanho ideal para acompanhar a rotina ou compor um presente especial.",
     price: 119.9,
+    cashPrice: null,
     creditPrice: 129.9,
     image: "/images/produtos/bolsa-feminina-rose..png",
     category: "acessorios",
@@ -445,6 +467,7 @@ export const products: Product[] = [
     description:
       "Urso de pelúcia com acabamento delicado, pensado para complementar kits e presentes especiais. Uma escolha afetiva para aniversários e outras ocasiões.",
     price: 89.9,
+    cashPrice: null,
     creditPrice: 97.9,
     image: "/images/produtos/urso-presenteavel..png",
     category: "acessorios",
