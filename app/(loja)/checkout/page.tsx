@@ -26,16 +26,16 @@ import type {
 import { buildOrderMessage, buildWhatsAppUrl } from "@/lib/whatsapp";
 
 const payments: PaymentMethod[] = [
-  "PIX",
-  "Cartão de crédito",
-  "Cartão de débito",
   "Dinheiro",
+  "PIX",
+  "Cartão de débito",
+  "Cartão de crédito",
 ];
 
 const emptyData: CheckoutData = {
   name: "",
   whatsapp: "",
-  payment: "PIX",
+  payment: "Dinheiro",
   receivingMode: "store-pickup",
   street: "",
   number: "",

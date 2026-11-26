@@ -28,7 +28,7 @@ export function productJsonLd(product: Product) {
     ...(product.image ? { image: new URL(product.image, url).href } : {}),
     ...(product.shortDescription || product.description ? { description: product.shortDescription || product.description } : {}),
     ...(product.brand ? { brand: { '@type': 'Brand', name: product.brand } } : {}),
-    url, offers: { '@type': 'Offer', url, price: product.price, priceCurrency: 'BRL', availability: `https://schema.org/${product.available ? 'InStock' : 'OutOfStock'}` },
+    url, offers: { '@type': 'Offer', url, price: product.price, description: 'Preço no PIX / cartão de débito', priceCurrency: 'BRL', availability: `https://schema.org/${product.available ? 'InStock' : 'OutOfStock'}` },
   };
 }
 

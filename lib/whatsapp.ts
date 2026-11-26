@@ -3,7 +3,7 @@ import { storeConfig } from "@/lib/store-config";
 import { formatCurrency } from "@/lib/format";
 import type { CartItem, CheckoutData } from "@/lib/types";
 
-import { canPayWithCredit, creditUnavailableMessage, getCartTotal, getLineTotal } from "@/lib/pricing";
+import { canPayWithCredit, creditUnavailableMessage, getCartTotal, getLineTotal, getProductPrice } from "@/lib/pricing";
 import { deliveryFeeLabel } from "@/lib/delivery";
 
 export function buildOrderMessage(
@@ -26,6 +26,7 @@ export function buildOrderMessage(
     lines.push(
       `• ${item.quantity}x ${item.product.name}${variation} — ${formatCurrency(lineTotal)}`,
     );
+    lines.push(`  Valor unitário: ${formatCurrency(getProductPrice(item.product, data.payment))}`);
   }
 
   lines.push("");

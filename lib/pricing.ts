@@ -7,12 +7,17 @@ export function canPayWithCredit(items: CartItem[]): boolean {
 }
 
 export function getProductPrice(product: Product, payment: PaymentMethod): number {
+  if (payment === "Dinheiro") return product.cashPrice ?? product.price;
   if (payment === "Cartão de crédito") {
     const credit = product.creditPrice;
     if (typeof credit !== "number" || !Number.isFinite(credit) || credit <= 0) throw new Error(creditUnavailableMessage);
     return credit;
   }
   return product.price;
+}
+
+export function hasSpecialCashPrice(product: Product): boolean {
+  return product.cashPrice != null && Math.round(product.cashPrice * 100) !== Math.round(product.price * 100);
 }
 
 export function getLineTotal(item: CartItem, payment: PaymentMethod): number {

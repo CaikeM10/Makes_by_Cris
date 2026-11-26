@@ -1,3 +1,4 @@
+import { getProductPrice, hasSpecialCashPrice } from "@/lib/pricing";
 import { pageMetadata, productJsonLd, serializeJsonLd } from "@/lib/seo";
 import type { Metadata } from 'next'
 import Link from 'next/link'
@@ -85,9 +86,10 @@ export default async function ProdutoPage({ params }: PageProps) {
                 {product.shortDescription}
               </p>}
               <div className="flex flex-col gap-1">
-                <p className="font-serif text-4xl text-primary">{formatCurrency(product.price)}</p>
-                <p className="text-xs text-muted-foreground">no PIX, débito ou dinheiro</p>
-                {product.creditPrice !== null && <p className="text-sm text-muted-foreground">{formatCurrency(product.creditPrice)} no crédito</p>}
+                <p className="font-serif text-4xl text-primary">{formatCurrency(getProductPrice(product, "Dinheiro"))}</p>
+                <p className="text-xs text-muted-foreground">{hasSpecialCashPrice(product) ? "em dinheiro" : "no PIX, débito ou dinheiro"}</p>
+                {hasSpecialCashPrice(product) && <p className="text-sm text-muted-foreground">{formatCurrency(product.price)} no PIX/débito</p>}
+                {product.creditPrice !== null && <p className="text-sm text-muted-foreground">{formatCurrency(product.creditPrice)} no crédito · até 6x</p>}
               </div>
             </div>
 

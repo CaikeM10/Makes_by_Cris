@@ -177,3 +177,6 @@
 
 .campaign-art-preview-desktop { height: auto; aspect-ratio: 8 / 3; }
 .campaign-art-preview-mobile { width: min(100%, 350px); height: auto; aspect-ratio: 35 / 32; object-fit: cover; object-position: center; border-radius: 1rem; }
+
+.catalog-price-columns { display: grid; gap: 1.25rem; }
+@media (min-width: 1200px) { .catalog-price-columns { grid-template-columns: repeat(3, minmax(0, 1fr)); } }

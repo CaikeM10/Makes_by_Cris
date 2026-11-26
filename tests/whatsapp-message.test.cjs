@@ -16,7 +16,9 @@ const expected = `Olá! Gostaria de realizar um pedido.
 
 *Produtos:*
 • 1x Natura Ekos Maracujá — R$\u00a061,00
+  Valor unitário: R$\u00a061,00
 • 1x Coffee Addictive — R$\u00a0120,00
+  Valor unitário: R$\u00a0120,00
 
 *Total: R$\u00a0181,00*
 

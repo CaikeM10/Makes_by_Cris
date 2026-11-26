@@ -14,8 +14,11 @@ export type Product = {
   shortDescription: string | null;
   description: string | null;
 
-  /** Preço à vista / PIX */
+  /** Preço obrigatório no PIX / cartão de débito */
   price: number;
+
+  /** Preço opcional em dinheiro em espécie; null utiliza price. */
+  cashPrice: number | null;
 
   /** Preço para pagamento no cartão de crédito */
   creditPrice: number | null;

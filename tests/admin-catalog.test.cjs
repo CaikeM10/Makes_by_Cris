@@ -28,7 +28,7 @@ test('validação rejeita campos vazios, longos, categoria e flags inválidas', 
 });
 test('patch permite somente campos editáveis, preserva slug, imagem, datas e metadados', () => {
   const result = validation.validateProduct({ ...valid, slug: 'evil', image: 'changed', created_at: 'today', keywords: [], catalog_order: 99 });
-  assert.deepEqual(Object.keys(result.data).sort(), Object.keys(valid).sort());
+  assert.deepEqual(Object.keys(result.data).sort(), [...Object.keys(valid), 'cash_price'].sort());
 });
 test('filtros normalizam URL, categorias, busca e paginação', () => {
   const f = validation.parseFilters({ q: ' Kit ', filter: 'inactive', category: 'cat-6', page: '2' });

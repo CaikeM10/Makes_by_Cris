@@ -19,13 +19,13 @@ export function validateProduct(input: Record<string, unknown>): { data?: Produc
     if ((key === "name" && !value) || value.length > spec.max || (input[key] != null && typeof input[key] !== "string")) errors[key] = `${spec.label}: informe de 1 a ${spec.max} caracteres.`;
     data[key] = key !== "name" && !value ? null : value;
   }
-  for (const key of ["price", "credit_price"]) {
-    if (key === "credit_price" && (input[key] === null || input[key] === undefined || (typeof input[key] === "string" && input[key].trim() === ""))) {
+  for (const key of ["cash_price", "price", "credit_price"]) {
+    if (key !== "price" && (input[key] === null || input[key] === undefined || (typeof input[key] === "string" && input[key].trim() === ""))) {
       data[key] = null;
       continue;
     }
     data[key] = parseMoney(input[key]);
-    if (data[key] === null || (key === "credit_price" && Number(data[key]) <= 0)) errors[key] = "Informe um preço válido e positivo, sem separador de milhar, com até duas casas decimais.";
+    if (data[key] === null || Number(data[key]) <= 0) errors[key] = "Informe um preço válido e positivo, sem separador de milhar, com até duas casas decimais.";
   }
   if (typeof input.category_id !== "string" || !input.category_id.trim() || input.category_id.length > 100) errors.category_id = "Selecione uma categoria.";
   data.category_id = input.category_id;

@@ -11,6 +11,8 @@ import { deliveryNotice } from '@/lib/delivery'
 export default function SacolaPage() {
   const { items, subtotal, bagCount, updateQuantity, removeItem, clearBag } = useStore()
 
+  const cashTotal = getCartTotal(items, 'Dinheiro')
+  const hasCashDiscount = cashTotal < subtotal
   const creditTotal = canPayWithCredit(items) ? getCartTotal(items, 'Cartão de crédito') : null
 
   if (items.length === 0) {
@@ -61,6 +63,12 @@ export default function SacolaPage() {
         <ul className="flex flex-col divide-y divide-border border-y border-border">
           {items.map((item) => {
             const key = `${item.product.id}-${item.variation ?? ''}`
+            const pixLineTotal = getLineTotal(item, 'PIX')
+            const cashLineTotal = getLineTotal(item, 'Dinheiro')
+            const hasLineCashDiscount = cashLineTotal < pixLineTotal
+            const creditLineTotal = hasLineCashDiscount && canPayWithCredit([item])
+              ? getLineTotal(item, 'Cartão de crédito')
+              : null
             return (
               <li key={key} className="flex gap-4 py-5">
                 <Link
@@ -98,7 +106,7 @@ export default function SacolaPage() {
                     </button>
                   </div>
 
-                  <div className="mt-auto flex items-center justify-between gap-3">
+                  <div className="mt-auto flex flex-wrap items-center justify-between gap-3">
                     <div className="flex items-center rounded-full border border-border">
                       <button
                         type="button"
@@ -124,7 +132,20 @@ export default function SacolaPage() {
                     </div>
 
                     <span className="font-serif text-lg text-primary">
-                      {formatCurrency(getLineTotal(item, 'PIX'))}
+                      {formatCurrency(hasLineCashDiscount ? cashLineTotal : pixLineTotal)}
+                      <span className="block font-sans text-xs text-muted-foreground">
+                        {hasLineCashDiscount ? 'em dinheiro' : 'no PIX/débito'}
+                      </span>
+                      {hasLineCashDiscount && (
+                        <span className="block font-sans text-xs text-muted-foreground">
+                          {formatCurrency(pixLineTotal)} no PIX/débito
+                        </span>
+                      )}
+                      {creditLineTotal !== null && (
+                        <span className="block font-sans text-xs text-muted-foreground">
+                          {formatCurrency(creditLineTotal)} no crédito
+                        </span>
+                      )}
                     </span>
                   </div>
                 </div>
@@ -138,10 +159,11 @@ export default function SacolaPage() {
             <h2 className="font-serif text-xl">Resumo</h2>
 
             <dl className="flex flex-col gap-3 text-sm">
-              <div className="flex items-center justify-between gap-4">
-                <dt className="text-secondary-foreground/75">Subtotal no PIX, débito ou dinheiro</dt>
+              {cashTotal > subtotal && <div className="flex items-center justify-between gap-4"><dt className="text-secondary-foreground/75">Total em dinheiro</dt><dd className="shrink-0 font-medium">{formatCurrency(cashTotal)}</dd></div>}
+              {hasCashDiscount && <div className="flex items-center justify-between gap-4">
+                <dt className="text-secondary-foreground/75">Total no PIX/débito</dt>
                 <dd className="shrink-0 font-medium">{formatCurrency(subtotal)}</dd>
-              </div>
+              </div>}
               {creditTotal !== null && <div className="flex items-center justify-between gap-4">
                 <dt className="text-secondary-foreground/75">Total no crédito</dt>
                 <dd className="shrink-0 font-medium">{formatCurrency(creditTotal)}</dd>
@@ -155,9 +177,13 @@ export default function SacolaPage() {
             </dl>
 
             <div className="flex items-baseline justify-between gap-4 border-t border-foreground/10 pt-4">
-              <span className="eyebrow text-secondary-foreground/75">Total no PIX, débito ou dinheiro</span>
-              <span className="shrink-0 font-serif text-3xl text-primary">{formatCurrency(subtotal)}</span>
+              <span className="eyebrow text-secondary-foreground/75">{hasCashDiscount ? 'Total em dinheiro' : 'Total no PIX/débito'}</span>
+              <span className="shrink-0 font-serif text-3xl text-primary">{formatCurrency(hasCashDiscount ? cashTotal : subtotal)}</span>
             </div>
+
+            {hasCashDiscount && <p className="text-center text-xs leading-relaxed text-secondary-foreground/70">
+              A forma de pagamento será definida na próxima etapa.
+            </p>}
 
             <LinkButton href="/checkout" size="lg" className="h-13 gap-2 rounded-full">
               Finalizar pedido

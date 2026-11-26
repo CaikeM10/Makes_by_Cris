@@ -19,7 +19,7 @@ export function mapPublicProduct(row: PublicProductRow, category: Category): Pub
   return {
     id: row.id, name: row.name, slug: row.slug,
     shortDescription: row.short_description, description: row.description,
-    price: Number(row.price), creditPrice: row.credit_price === null ? null : Number(row.credit_price),
+    cashPrice: row.cash_price == null ? null : Number(row.cash_price), price: Number(row.price), creditPrice: row.credit_price === null ? null : Number(row.credit_price),
     image: reviewedImages[row.id] ?? resolveProductImage(row.image), category: category.slug, brand: row.brand,
     keywords: row.keywords, variations: row.variations ?? undefined,
     featured: row.featured, bestSeller: row.best_seller, giftSection: row.gift_section, newArrival: row.new_arrival,
@@ -28,5 +28,5 @@ export function mapPublicProduct(row: PublicProductRow, category: Category): Pub
 }
 
 export function mapProduct(row: ProductRow): AdminProduct {
-  return { ...row, price: Number(row.price).toFixed(2), credit_price: row.credit_price === null ? null : Number(row.credit_price).toFixed(2) };
+  return { ...row, cash_price: row.cash_price == null ? null : Number(row.cash_price).toFixed(2), price: Number(row.price).toFixed(2), credit_price: row.credit_price === null ? null : Number(row.credit_price).toFixed(2) };
 }

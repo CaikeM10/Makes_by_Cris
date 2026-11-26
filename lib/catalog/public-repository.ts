@@ -4,7 +4,7 @@ import type { Category } from "@/lib/types";
 import { mapPublicProduct, type PublicProductRow } from "./mappers";
 import type { PublicCatalog } from "./public-catalog";
 
-export const PUBLIC_PRODUCT_COLUMNS = "id,name,slug,short_description,description,price,credit_price,image,category_id,brand,keywords,variations,featured,best_seller,gift_section,new_arrival,available,active,created_at";
+export const PUBLIC_PRODUCT_COLUMNS = "id,name,slug,short_description,description,price,cash_price,credit_price,image,category_id,brand,keywords,variations,featured,best_seller,gift_section,new_arrival,available,active,created_at";
 export const PUBLIC_CATEGORY_COLUMNS = "id,name,slug,description,image,active";
 
 /** Explicit public filters also apply when the current visitor is an admin. */
